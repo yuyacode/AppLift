@@ -67,7 +67,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
     volumes:
       - db_data:/var/lib/mysql
-      - ./mysql:/docker-entrypoint-initdb.d  # 初回起動時のDB作成スクリプト
+      - ./mysql:/docker-entrypoint-initdb.d
     networks:
       - laravel_network
 

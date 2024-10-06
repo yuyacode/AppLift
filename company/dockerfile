@@ -1,7 +1,5 @@
-# ベースイメージ
 FROM php:8.3-fpm
 
-# 必要な拡張機能のインストール
 RUN docker-php-ext-install pdo pdo_mysql
 
 # Nginxのインストールと mime.types ファイルのインストール
@@ -11,16 +9,12 @@ RUN apt-get update && apt-get install -y nginx \
     && curl -o /etc/nginx/mime.types https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types \
     && ls /etc/nginx/mime.types
 
-# Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# アプリケーションディレクトリの作成
 WORKDIR /var/www/html
 
-# プロジェクトファイルをコピー
 COPY . .
 
-# 権限の変更
 RUN chown -R www-data:www-data /var/www/html
 
 # Composerのインストールとキャッシュクリア
