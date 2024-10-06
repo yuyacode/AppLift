@@ -4,6 +4,13 @@ FROM php:8.3-fpm
 # 必要な拡張機能のインストール
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Nginxのインストールと mime.types ファイルのインストール
+# mime.typesファイルの存在確認
+RUN apt-get update && apt-get install -y nginx \
+    && mkdir -p /etc/nginx \
+    && curl -o /etc/nginx/mime.types https://raw.githubusercontent.com/nginx/nginx/master/conf/mime.types \
+    && ls /etc/nginx/mime.types
+
 # Composerのインストール
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -21,5 +28,8 @@ RUN composer install --optimize-autoloader --no-dev \
     && php artisan config:cache \
     && php artisan route:cache
 
-# PHP-FPMの実行
-CMD ["php-fpm"]
+# Nginxの設定を追加
+COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+
+# NginxとPHP-FPMをフォアグラウンドで起動
+CMD ["sh", "-c", "nginx -g 'daemon off;' & php-fpm"]
