@@ -1,0 +1,77 @@
+services:
+  web:
+    image: nginx:alpine
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    ports:
+      - "80:80"
+    depends_on:
+      - app-company
+      - app-student
+    networks:
+      - laravel_network
+
+  app-company:
+    build:
+      context: ./company
+    container_name: app-company
+    volumes:
+      - ./company:/var/www/html
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: company
+      DB_USERNAME: user1
+      DB_PASSWORD: password1
+      DB2_CONNECTION: mysql
+      DB2_HOST: db
+      DB2_PORT: 3306
+      DB2_DATABASE: student
+      DB2_USERNAME: user2
+      DB2_PASSWORD: password2
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+
+  app-student:
+    build:
+      context: ./student
+    container_name: app-student
+    volumes:
+      - ./student:/var/www/html
+    environment:
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: student
+      DB_USERNAME: user2
+      DB_PASSWORD: password2
+      DB1_CONNECTION: mysql
+      DB1_HOST: db
+      DB1_PORT: 3306
+      DB1_DATABASE: company
+      DB1_USERNAME: user1
+      DB1_PASSWORD: password1
+    networks:
+      - laravel_network
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./mysql:/docker-entrypoint-initdb.d  # 初回起動時のDB作成スクリプト
+    networks:
+      - laravel_network
+
+volumes:
+  db_data:
+
+networks:
+  laravel_network:
+    driver: bridge

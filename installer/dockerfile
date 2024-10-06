@@ -1,0 +1,10 @@
+FROM php:8.3-cli
+
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Node.jsとnpmのインストール
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+    && apt-get install -y nodejs git unzip
+
+WORKDIR /var/www/html

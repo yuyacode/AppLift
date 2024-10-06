@@ -1,0 +1,8 @@
+services:
+  app:
+    build: .
+    container_name: installer
+    volumes:
+      # - ../company:/var/www/html
+      - ../student:/var/www/html  # セットアップするディレクトリに合わせてコメントを外す
+    working_dir: /var/www/html

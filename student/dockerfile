@@ -1,0 +1,25 @@
+# ベースイメージ
+FROM php:8.3-fpm
+
+# 必要な拡張機能のインストール
+RUN docker-php-ext-install pdo pdo_mysql
+
+# Composerのインストール
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# アプリケーションディレクトリの作成
+WORKDIR /var/www/html
+
+# プロジェクトファイルをコピー
+COPY . .
+
+# 権限の変更
+RUN chown -R www-data:www-data /var/www/html
+
+# Composerのインストールとキャッシュクリア
+RUN composer install --optimize-autoloader --no-dev \
+    && php artisan config:cache \
+    && php artisan route:cache
+
+# PHP-FPMの実行
+CMD ["php-fpm"]
