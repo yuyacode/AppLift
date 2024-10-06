@@ -1,0 +1,25 @@
+Laravelセットアップ手順
+
+Laravelをインストール
+1. ルートにcompanyディレクトリ作成
+2. cd installer
+3. docker compose run --rm app composer create-project laravel/laravel .
+
+Laravel Breezeのインストール
+1. cd installer
+2. docker compose run --rm app bash
+3. 以下のコマンドを順に実行
+   composer require laravel/breeze --dev
+   php artisan breeze:install blade
+   php artisan migrate（必要ないかもしれません）
+   npm install
+   npm run dev (必要ないかもしれません)
+4. exitでコンテナから抜ける
+
+Breezejpパッケージのインストール
+1. cd installer
+2. docker compose run --rm app bash
+3. 以下のコマンドを順に実行
+   composer require askdkc/breezejp --dev
+   php artisan breezejp
+4. exitでコンテナから抜ける
