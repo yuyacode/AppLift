@@ -62,7 +62,7 @@ return [
             ]) : [],
         ],
 
-        'db2' => [
+        'student' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
             'host' => env('DB2_HOST', '127.0.0.1'),
