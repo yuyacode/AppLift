@@ -1,8 +1,8 @@
 CREATE DATABASE IF NOT EXISTS company;
 CREATE DATABASE IF NOT EXISTS student;
 
-CREATE USER 'user1'@'%' IDENTIFIED BY 'password1';
-CREATE USER 'user2'@'%' IDENTIFIED BY 'password2';
+CREATE USER IF NOT EXISTS 'user1'@'%' IDENTIFIED BY 'password1';
+CREATE USER IF NOT EXISTS 'user2'@'%' IDENTIFIED BY 'password2';
 
 GRANT ALL PRIVILEGES ON company.* TO 'user1'@'%';
 GRANT ALL PRIVILEGES ON student.* TO 'user2'@'%';
