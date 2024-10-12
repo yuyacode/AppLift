@@ -12,7 +12,15 @@
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        <!-- @vite(['resources/css/app.css', 'resources/js/app.js']) -->
+
+        <?php
+            $manifest = json_decode(file_get_contents(public_path('student/build/manifest.json')), true);
+            $appCssPath = $manifest['resources/css/app.css']['file'];
+            $appJsPath = $manifest['resources/js/app.js']['file'];
+        ?>
+        <link rel="stylesheet" href="{{ asset('student/build/' . $appCssPath) }}">
+        <script src="{{ asset('student/build/' . $appJsPath) }}" defer></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
