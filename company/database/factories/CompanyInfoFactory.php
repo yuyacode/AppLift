@@ -17,7 +17,9 @@ class CompanyInfoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->company(),
+            'address' => fake()->prefecture(). fake()->city(). fake()->ward(). fake()->randomNumber(1). '-'. fake()->randomNumber(1). '-'. fake()->randomNumber(1),
+            'homepage' => fake()->url(),
         ];
     }
 }
