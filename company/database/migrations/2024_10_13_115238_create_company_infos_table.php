@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::connection('common')->create('company_infos', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->nullable()->default(null);
             $table->string('address')->nullable()->default(null);
             $table->text('HP')->nullable()->default(null);
             $table->timestamps();
