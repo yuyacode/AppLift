@@ -7,7 +7,9 @@ CREATE USER IF NOT EXISTS 'user2'@'%' IDENTIFIED BY 'password2';
 CREATE USER IF NOT EXISTS 'user3'@'%' IDENTIFIED BY 'password3';
 
 GRANT ALL PRIVILEGES ON company.* TO 'user1'@'%';
+GRANT ALL PRIVILEGES ON common.* TO 'user1'@'%';
 GRANT ALL PRIVILEGES ON student.* TO 'user2'@'%';
+GRANT ALL PRIVILEGES ON common.* TO 'user2'@'%';
 GRANT ALL PRIVILEGES ON common.* TO 'user3'@'%';
 
 FLUSH PRIVILEGES;
