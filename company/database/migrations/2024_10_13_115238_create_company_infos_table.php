@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->nullable()->default(null);
             $table->string('address')->nullable()->default(null);
-            $table->text('HP')->nullable()->default(null);
+            $table->text('homepage')->nullable()->default(null);
             $table->timestamps();
             $table->softDeletes(); 
         });

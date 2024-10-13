@@ -21,6 +21,6 @@ class CompanyInfo extends Model
     protected $fillable = [
         'name',
         'address',
-        'HP'
+        'homepage'
     ];
 }
