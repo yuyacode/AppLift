@@ -23,4 +23,9 @@ class CompanyInfo extends Model
         'address',
         'homepage'
     ];
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
 }
