@@ -39,7 +39,7 @@ class RegisteredUserController extends Controller
         $company_info = CompanyInfo::create([]);
 
         $user = User::create([
-            'company_id' => $company_info->id,
+            'company_info_id' => $company_info->id,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
