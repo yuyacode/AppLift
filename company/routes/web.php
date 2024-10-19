@@ -27,6 +27,7 @@ Route::prefix('company')->group(function () {
             ->group(function () {
                 Route::get('/', 'index')->name('index');
                 Route::get('/edit/{company_info}', 'edit')->name('edit');
+                Route::post('/edit/{company_info}', 'update')->name('update');
         });
 
     });

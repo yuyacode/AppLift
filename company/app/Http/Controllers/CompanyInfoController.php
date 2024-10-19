@@ -24,4 +24,19 @@ class CompanyInfoController extends Controller
 
         return view('company_info.edit', compact('company_info', 'data'));
     }
+
+    public function update(Request $request, CompanyInfo $company_info)
+    {
+        Gate::authorize('update', $company_info);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'address' => ['required', 'string', 'max:255'],
+            'homepage' => ['required', 'string'],
+        ]);
+
+        $company_info->update($data);
+
+        return to_route('company_info.index', $company_info)->with('status', '企業情報を変更しました');
+    }
 }

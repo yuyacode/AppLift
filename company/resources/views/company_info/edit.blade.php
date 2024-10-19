@@ -5,15 +5,15 @@
         </h2>
     </x-slot>
 
-    <form method="post" action="{{ route('company_info.edit', $company_info) }}">
+    <form method="post" action="{{ route('company_info.update', $company_info) }}">
         @csrf
-
-        <x-error />
-        <x-status />
 
         <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
                 <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
+
+                    <x-error />
+
                     <p class="max-w-xl">
                         <label class="block font-medium text-sm text-gray-700">企業名</label>
                         <input type="text" name="name" value="{{ data_get($data, 'name') }}" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
