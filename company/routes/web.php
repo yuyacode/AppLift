@@ -20,7 +20,14 @@ Route::prefix('company')->group(function () {
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-        Route::get('/company_info', [CompanyInfoController::class, 'index'])->name('company_info.index');
+        Route::prefix('company_info')
+            ->middleware('can:only-master')
+            ->name('company_info.')
+            ->controller(CompanyInfoController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/edit/{company_info}', 'edit')->name('edit');
+        });
 
     });
 
