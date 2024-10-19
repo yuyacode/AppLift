@@ -31,6 +31,12 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        @can('only-master')
+                            <x-dropdown-link :href="route('company_info.index')">
+                                企業情報
+                            </x-dropdown-link>
+                        @endcan
+
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
