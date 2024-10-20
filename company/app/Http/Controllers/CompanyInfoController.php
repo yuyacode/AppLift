@@ -10,10 +10,11 @@ use Illuminate\View\View;
 class CompanyInfoController extends Controller
 {
     public function index(Request $request): View
-    {        
+    {
         $company_info = $request->user()->company_info;
+        $members = $company_info->users;
 
-        return view('company_info.index', compact('company_info'));
+        return view('company_info.index', compact('company_info', 'members'));
     }
 
     public function edit(CompanyInfo $company_info): View
