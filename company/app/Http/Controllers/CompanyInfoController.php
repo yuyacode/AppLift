@@ -38,6 +38,6 @@ class CompanyInfoController extends Controller
 
         $company_info->update($data);
 
-        return to_route('company_info.index', $company_info)->with('status', '企業情報を変更しました');
+        return to_route('company_info.index')->with('status_company-basic-info', '基本情報を変更しました');
     }
 }

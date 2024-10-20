@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyInfoController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,20 +24,27 @@ Route::prefix('company')->group(function () {
         Route::prefix('company_info')
             ->middleware('can:only-master')
             ->name('company_info.')
-            ->controller(CompanyInfoController::class)
             ->group(function () {
-                Route::get('/', 'index')->name('index');
+                Route::get('/', [CompanyInfoController::class, 'index'])->name('index');
 
                 Route::prefix('basic_info')
                     ->name('basic_info.')
                     ->group(function () {
-                        Route::get('/edit/{company_info}', 'edit')->name('edit');
-                        Route::post('/edit/{company_info}', 'update')->name('update');
-                });
-        });
+                        Route::get('/edit/{company_info}', [CompanyInfoController::class, 'edit'])->name('edit');
+                        Route::post('/edit/{company_info}', [CompanyInfoController::class, 'update'])->name('update');
+                    }
+                );
 
+                Route::prefix('member')
+                    ->name('member.')
+                    ->group(function () {
+                        Route::get('/add', [UserController::class, 'create'])->name('create');
+                        Route::post('/add', [UserController::class, 'store'])->name('store');
+                    }
+                );
+            }
+        );
     });
 
     require __DIR__.'/auth.php';
-
 });
