@@ -26,8 +26,13 @@ Route::prefix('company')->group(function () {
             ->controller(CompanyInfoController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/edit/{company_info}', 'edit')->name('edit');
-                Route::post('/edit/{company_info}', 'update')->name('update');
+
+                Route::prefix('basic_info')
+                    ->name('basic_info.')
+                    ->group(function () {
+                        Route::get('/edit/{company_info}', 'edit')->name('edit');
+                        Route::post('/edit/{company_info}', 'update')->name('update');
+                });
         });
 
     });

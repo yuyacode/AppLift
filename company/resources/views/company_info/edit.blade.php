@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <form method="post" action="{{ route('company_info.update', $company_info) }}">
+    <form method="post" action="{{ route('company_info.basic_info.update', $company_info) }}">
         @csrf
 
         <div class="py-12">
