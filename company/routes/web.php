@@ -17,9 +17,16 @@ Route::prefix('company')->group(function () {
             return view('dashboard');
         })->name('dashboard');
 
-        Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-        Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-        Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+        Route::prefix('profile')
+            ->name('profile.')
+            ->controller(ProfileController::class)
+            ->group(function () {
+                Route::get('/', 'edit')->name('edit');
+                Route::patch('/', 'update_account_info')->name('update_account_info');
+                Route::patch('/{user}', 'update_profile_info')->name('update_profile_info');
+                Route::delete('/', 'destroy')->name('destroy');
+            }
+        );
 
         Route::prefix('company_info')
             ->middleware('can:only-master')
