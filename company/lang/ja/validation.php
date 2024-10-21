@@ -256,6 +256,11 @@ return [
         'updated_at' => '更新日',
         'username' => 'ユーザー名',
         'year' => '年',
+        'department' => '部署、部門',
+        'occupation' => '職種、職業',
+        'position' => '役職、ポジション',
+        'join_date' => '入社時期',
+        'introduction' => '自己紹介',
     ],
 
 ];

@@ -44,11 +44,11 @@ class ProfileController extends Controller
         Gate::authorize('update', $user);
 
         $data = $request->validate([
-            'department'   => ['required', 'string', 'max:255'],
-            'occupation'   => ['required', 'string', 'max:255'],
-            'position'     => ['required', 'string', 'max:255'],
-            'join_date'    => ['required', 'string', 'max:255'],
-            'introduction' => ['required', 'string'],
+            'department'   => ['string', 'max:255'],
+            'occupation'   => ['string', 'max:255'],
+            'position'     => ['string', 'max:255'],
+            'join_date'    => ['string', 'max:255'],
+            'introduction' => ['string'],
         ]);
 
         $user->update($data);
