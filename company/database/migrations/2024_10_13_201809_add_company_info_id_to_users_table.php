@@ -19,10 +19,8 @@ return new class extends Migration
         
         Schema::table('users', function (Blueprint $table) {
             $table->foreign('company_info_id')
-                  ->index()
                   ->references('id')
-                  ->on('common.company_infos')
-                  ->onDelete('cascade');
+                  ->on('common.company_infos');
         });
         
     }

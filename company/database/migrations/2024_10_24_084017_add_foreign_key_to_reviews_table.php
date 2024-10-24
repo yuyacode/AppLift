@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::connection('common')->table('reviews', function (Blueprint $table) {
             $table->foreign('company_user_id')
                   ->references('id')
-                  ->on('company.users')
-                  ->onDelete('cascade');
+                  ->on('company.users');
         });
     }
 
