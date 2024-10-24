@@ -11,5 +11,7 @@ GRANT ALL PRIVILEGES ON common.* TO 'user1'@'%';
 GRANT ALL PRIVILEGES ON student.* TO 'user2'@'%';
 GRANT ALL PRIVILEGES ON common.* TO 'user2'@'%';
 GRANT ALL PRIVILEGES ON common.* TO 'user3'@'%';
+GRANT ALL PRIVILEGES ON company.* TO 'user3'@'%';
+GRANT ALL PRIVILEGES ON student.* TO 'user3'@'%';
 
 FLUSH PRIVILEGES;
