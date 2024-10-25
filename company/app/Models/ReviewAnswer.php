@@ -16,4 +16,9 @@ class ReviewAnswer extends Model
     {
         return $this->belongsTo(Review::class);
     }
+
+    public function item()
+    {
+        return $this->belongsTo(ReviewItem::class);
+    }
 }

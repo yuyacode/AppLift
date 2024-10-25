@@ -9,4 +9,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ReviewItem extends Model
 {
     use HasFactory, SoftDeletes;
+
+    protected $connection = 'common';
+
+    public function answers()
+    {
+        return $this->hasMany(ReviewAnswer::class);
+    }
 }
