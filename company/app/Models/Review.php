@@ -10,4 +10,13 @@ class Review extends Model
 {
     /** @use HasFactory<\Database\Factories\ReviewFactory> */
     use HasFactory, SoftDeletes;
+
+    protected $connection = 'common';
+
+    public function companyUser()
+    {
+        // memo：setConnectionがなくてもいけるか確認する
+        // return $this->belongsTo(User::class, 'company_user_id', 'id')->setConnection('company');
+        return $this->belongsTo(User::class, 'company_user_id', 'id');
+    }
 }
