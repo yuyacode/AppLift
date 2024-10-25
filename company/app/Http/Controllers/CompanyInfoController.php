@@ -11,7 +11,7 @@ class CompanyInfoController extends Controller
 {
     public function index(Request $request): View
     {
-        $company_info = $request->user()->company_info;
+        $company_info = $request->user()->companyInfo;
         $members = $company_info->users;
 
         return view('company_info.index', compact('company_info', 'members'));

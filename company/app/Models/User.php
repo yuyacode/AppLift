@@ -55,7 +55,7 @@ class User extends Authenticatable
         ];
     }
 
-    public function company_info()
+    public function companyInfo()
     {
         return $this->belongsTo(CompanyInfo::class);
     }

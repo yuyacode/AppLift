@@ -25,7 +25,7 @@ class UserController extends Controller
         ]);
 
         User::create([
-            'company_info_id' => $request->user()->company_info->id,
+            'company_info_id' => $request->user()->companyInfo->id,
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
