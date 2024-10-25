@@ -13,7 +13,7 @@ class Review extends Model
 
     protected $connection = 'common';
 
-    public function companyUser()
+    public function user()
     {
         // memo：setConnectionがなくてもいけるか確認する
         // return $this->belongsTo(User::class, 'company_user_id', 'id')->setConnection('company');
