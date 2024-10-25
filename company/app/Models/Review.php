@@ -19,4 +19,10 @@ class Review extends Model
         // return $this->belongsTo(User::class, 'company_user_id', 'id')->setConnection('company');
         return $this->belongsTo(User::class, 'company_user_id', 'id');
     }
+
+    public function answers()
+    {
+        return $this->hasMany(ReviewAnswer::class);
+    }
+
 }
