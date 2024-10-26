@@ -42,47 +42,38 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        try {
-            DB::transaction(function() use ($request, &$user) {
-                $company_info = CompanyInfo::create([]);
+        $company_info = CompanyInfo::create([]);
 
-                $user = User::create([
-                    'company_info_id' => $company_info->id,
-                    'name' => $request->name,
-                    'email' => $request->email,
-                    'password' => Hash::make($request->password),
-                    'is_master' => 1
-                ]);
+        $user = User::create([
+            'company_info_id' => $company_info->id,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'is_master' => 1
+        ]);
 
-                $review = Review::create([
-                    'company_user_id' => $user->id,
-                    'status' => 0,
-                ]);
+        $review = Review::create([
+            'company_user_id' => $user->id,
+            'status' => 0,
+        ]);
 
-                $default_review_item_ids = ReviewItem::where('is_default', 1)->pluck('id');
+        $default_review_item_ids = ReviewItem::where('is_default', 1)->pluck('id');
 
-                $review_answers = array();
-                $now = now();
-                foreach ($default_review_item_ids as $id) :
-                    array_push($review_answers, [
-                        'review_id' => $review->id,
-                        'review_item_id' => $id,
-                        'created_at' => $now
-                    ]);
-                endforeach;
+        $review_answers = array();
+        $now = now();
+        foreach ($default_review_item_ids as $id) :
+            array_push($review_answers, [
+                'review_id' => $review->id,
+                'review_item_id' => $id,
+                'created_at' => $now
+            ]);
+        endforeach;
 
-                ReviewAnswer::insert($review_answers);
-            });
+        ReviewAnswer::insert($review_answers);
 
-            event(new Registered($user));
+        event(new Registered($user));
 
-            Auth::login($user);
-
-        } catch (Exception $e) {
-            Log::error($e->getMessage());
-            Log::error($e->getTraceAsString());
-            return redirect()->back()->withErrors(['登録中にエラーが発生しました。もう一度お試しください。']);
-        }
+        Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
     }
