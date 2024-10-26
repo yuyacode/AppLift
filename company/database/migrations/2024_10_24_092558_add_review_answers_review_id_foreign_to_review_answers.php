@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('review_answers', function (Blueprint $table) {
+        Schema::connection('common')->table('review_answers', function (Blueprint $table) {
             $table->dropForeign(['review_id']);
         });
     }
