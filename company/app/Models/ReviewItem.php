@@ -12,6 +12,15 @@ class ReviewItem extends Model
 
     protected $connection = 'common';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'name',
+    ];
+
     public function answers()
     {
         return $this->hasMany(ReviewAnswer::class);

@@ -13,6 +13,17 @@ class Review extends Model
 
     protected $connection = 'common';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'company_user_id',
+        'title',
+        'status'
+    ];
+
     public function user()
     {
         // memo：setConnectionがなくてもいけるか確認する

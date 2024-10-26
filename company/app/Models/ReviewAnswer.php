@@ -12,6 +12,18 @@ class ReviewAnswer extends Model
 
     protected $connection = 'common';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
+    protected $fillable = [
+        'review_id',
+        'review_item_id',
+        'score',
+        'answer'
+    ];
+
     public function review()
     {
         return $this->belongsTo(Review::class);
