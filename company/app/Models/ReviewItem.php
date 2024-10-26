@@ -19,6 +19,7 @@ class ReviewItem extends Model
      */
     protected $fillable = [
         'name',
+        'is_default',
     ];
 
     public function answers()
