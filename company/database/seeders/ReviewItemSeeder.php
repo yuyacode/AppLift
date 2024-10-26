@@ -93,6 +93,6 @@ class ReviewItemSeeder extends Seeder
             ],
         ];
         
-        ReviewItem::insert($items);        
+        ReviewItem::insert($items);
     }
 }

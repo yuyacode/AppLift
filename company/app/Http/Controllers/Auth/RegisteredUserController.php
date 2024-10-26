@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use App\Models\CompanyInfo;
+use App\Models\Review;
+use App\Models\ReviewAnswer;
+use App\Models\ReviewItem;
+use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -45,6 +48,25 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
             'is_master' => 1
         ]);
+
+        $review = Review::create([
+            'company_user_id' => $user->id,
+            'status' => 0,
+        ]);
+
+        $default_review_item_ids = ReviewItem::where('is_default', 1)->pluck('id');
+
+        $review_answers = array();
+        $now = now();
+        foreach ($default_review_item_ids as $id) :
+            array_push($review_answers, [
+                'review_id' => $review->id,
+                'review_item_id' => $id,
+                'created_at' => $now
+            ]);
+        endforeach;
+
+        ReviewAnswer::insert($review_answers);
 
         event(new Registered($user));
 
