@@ -26,8 +26,6 @@ class Review extends Model
 
     public function user()
     {
-        // memo：setConnectionがなくてもいけるか確認する
-        // return $this->belongsTo(User::class, 'company_user_id', 'id')->setConnection('company');
         return $this->belongsTo(User::class, 'company_user_id', 'id');
     }
 
