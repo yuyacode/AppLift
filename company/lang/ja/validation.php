@@ -261,6 +261,7 @@ return [
         'position' => '役職、ポジション',
         'join_date' => '入社時期',
         'introduction' => '自己紹介',
+        'homepage' => 'ホームページ',
     ],
 
 ];
