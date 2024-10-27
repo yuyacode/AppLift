@@ -22,7 +22,7 @@ class ReviewItem extends Model
         'is_default',
     ];
 
-    public function answers()
+    public function reviewAnswer()
     {
         return $this->hasMany(ReviewAnswer::class);
     }

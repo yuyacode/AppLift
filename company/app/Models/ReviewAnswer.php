@@ -29,7 +29,7 @@ class ReviewAnswer extends Model
         return $this->belongsTo(Review::class);
     }
 
-    public function item()
+    public function reviewItem()
     {
         return $this->belongsTo(ReviewItem::class);
     }

@@ -29,7 +29,7 @@ class Review extends Model
         return $this->belongsTo(User::class, 'company_user_id', 'id');
     }
 
-    public function answers()
+    public function reviewAnswer()
     {
         return $this->hasMany(ReviewAnswer::class);
     }
