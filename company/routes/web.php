@@ -1,16 +1,12 @@
 <?php
 
 use App\Http\Controllers\CompanyInfoController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('company')->group(function () {
-
-    // Route::get('/', function () {
-    //     return view('welcome');
-    // });
-
     Route::middleware('auth')->group(function () {
 
         Route::get('/dashboard', function () {
@@ -51,6 +47,15 @@ Route::prefix('company')->group(function () {
                 );
             }
         );
+
+        Route::prefix('review')
+            ->name('review.')
+            ->group(function () {
+                Route::get('/', [ReviewController::class, 'edit'])->name('edit');
+                Route::post('/{reviews}', [ReviewController::class, 'update'])->name('update');
+            }
+        );
+
     });
 
     require __DIR__.'/auth.php';
