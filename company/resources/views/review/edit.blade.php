@@ -21,7 +21,15 @@
                         <input type="text" name="title" value="{{ data_get($data, 'title') }}" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                     </p>
 
-                    <!-- ステータス -->
+                    <p class="block font-medium text-gray-700">公開設定</p>
+                    <div class="flex_custom">
+                        <p class="mr24">
+                            <input type="radio" name="status" value="1" class="mr8" {{ data_get($data, 'status') == '1' ? 'checked' : '' }}>公開
+                        </p>
+                        <p>
+                            <input type="radio" name="status" value="0" class="mr8" {{ data_get($data, 'status') == '0' ? 'checked' : '' }}>下書き
+                        </p>
+                    </div>
 
                     @foreach ($review->reviewAnswer as $answer)
                         <div style="margin-top: 36px;">

@@ -26,6 +26,7 @@ class ReviewController extends Controller
     {
         $request->validate([
             'title' => ['required', 'string', 'max:255'],
+            'status' => ['required', 'in:1,0'],
             'answers' => ['array'],
             'answers.*.score' => ['nullable', 'integer', 'min:0', 'max:100'],
             'answers.*.answer' => ['nullable', 'string'],
@@ -39,7 +40,7 @@ class ReviewController extends Controller
             DB::transaction(function () use ($reviews, $post) {
                 $reviews->update([
                     'title' => $post['title'],
-                    // status
+                    'status' => $post['status'],
                 ]);
 
                 foreach ($post['answers'] as $id => $data) :

@@ -37,7 +37,7 @@ class ReviewAnswerPolicy
      */
     public function update(User $user, ReviewAnswer $reviewAnswer): bool
     {
-        return $user->id === $reviewAnswer->review_id->company_user_id;
+        return $user->id === $reviewAnswer->review->company_user_id;
     }
 
     /**
