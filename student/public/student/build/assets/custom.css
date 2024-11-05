@@ -1,0 +1,7 @@
+.flex_custom {
+    display: flex;
+}
+
+.space-around_custom {
+    justify-content: space-around;
+}

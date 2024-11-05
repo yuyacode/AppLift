@@ -18,6 +18,8 @@
         ?>
         <link rel="stylesheet" href="{{ asset('student/build/'.$appCssPath) }}">
         <script src="{{ asset('student/build/'.$appJsPath) }}" defer></script>
+
+        <link rel="stylesheet" href="{{ asset('student/build/assets/custom.css') }}">
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
