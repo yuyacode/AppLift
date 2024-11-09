@@ -21,4 +21,9 @@ class MessageThread extends Model
     protected $fillable = [
         // 後で定義する
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'company_user_id', 'id');
+    }
 }
