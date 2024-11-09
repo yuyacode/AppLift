@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CompanyInfoController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\UserController;
@@ -53,6 +54,13 @@ Route::prefix('company')->group(function () {
             ->group(function () {
                 Route::get('/', [ReviewController::class, 'edit'])->name('edit');
                 Route::post('/{reviews}', [ReviewController::class, 'update'])->name('update');
+            }
+        );
+
+        Route::prefix('message')
+            ->name('message.')
+            ->group(function () {
+                Route::get('/', [MessageController::class, 'index'])->name('index');
             }
         );
 

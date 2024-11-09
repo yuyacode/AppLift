@@ -8,6 +8,10 @@ class MessageController extends Controller
 {
     public function index()
     {
-        // 
+        return view('message.index', [
+            // 'messageThreads' => $messageThreads,
+            // 'users' => $users,
+            // 'additionalData' => $additionalData
+        ]);
     }
 }
