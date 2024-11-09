@@ -21,4 +21,9 @@ class Message extends Model
     protected $fillable = [
         // 後で定義する
     ];
+
+    public function messageThread()
+    {
+        return $this->belongsTo(MessageThread::class);
+    }
 }

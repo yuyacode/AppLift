@@ -26,4 +26,9 @@ class MessageThread extends Model
     {
         return $this->belongsTo(User::class, 'company_user_id', 'id');
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
