@@ -20,6 +20,7 @@
             <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script> -->
             <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.min.js" defer></script>
             <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" defer></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" defer></script>
         @endif
     </head>
     <body class="font-sans antialiased">

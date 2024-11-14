@@ -1,3 +1,19 @@
+.w30per {
+    width: 30%;
+}
+
+.pt8 {
+    padding-top: 8px;
+}
+
+.pt16 {
+    padding-top: 16px;
+}
+
+.pb16 {
+    padding-bottom: 16px;
+}
+
 .pr24 {
     padding-right: 24px;
 }
@@ -14,10 +30,34 @@
     margin-right: 24px;
 }
 
+.ml24  {
+    margin-left: 24px;
+}
+
+.bt-gray {
+    border-top: 1px solid #D1D5DB;
+}
+
+.bb-gray {
+    border-bottom: 1px solid #D1D5DB;
+}
+
+.br-gray {
+    border-right: 1px solid #D1D5DB;
+}
+
 .flex_custom {
     display: flex;
 }
 
 .space-around_custom {
     justify-content: space-around;
+}
+
+.space-between_custom {
+    justify-content: space-between;
+}
+
+.pointer {
+    cursor: pointer;
 }

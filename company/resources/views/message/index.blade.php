@@ -1,19 +1,27 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex_custom space-around_custom">
-            <p class="text-sm"><a href="#">メッセージ</a></p>
-            <p class="text-sm"><a href="#">レビュー</a></p>
+            <p class="text-sm"><a href="{{ route('message.index') }}">メッセージ</a></p>
+            <p class="text-sm"><a href="{{ route('review.edit') }}">レビュー</a></p>
         </div>
     </x-slot>
-    <div id="message">
-        <div class="flex_custom space-around_custom">
-            <div data-bind="event: {scroll: threadLoad}">
-                <!-- スレッド一覧 -->
-                <!-- スレッド一覧 -->
-                <div data-bind="visible: $root.threadLoading" style="text-align: center"><img src="/company/build/assets/loading_small.gif"></div>
-            </div>
-            <div>
-                <p>メッセージ詳細</p>
+    <div id="message" class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
+        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
+            <div class="flex_custom">
+                <div class="w30per br-gray">
+                    <ul data-bind="foreach: threads">
+                        <li class="pt16 pb16 pointer" data-bind="css: { 'bt-gray': $index() !== 0 }">
+                            <div class="flex_custom space-between_custom mb8 pr24">
+                                <p data-bind="text: '学生' + $data.student_user_id"></p>
+                                <p data-bind="text: $root.datetimeFormat($data.updated_at)" class="text-gray-500"></p>
+                            </div>
+                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content) : '（メッセージがありません）'" class="pr24 text-gray-500"></p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="ml24">
+                    <p>メッセージ詳細</p>
+                </div>
             </div>
         </div>
     </div>
@@ -24,36 +32,15 @@
                 // self.sample = ko.observable(1);
                 // self.sampleArray = ko.observableArray();
                 // self.sampleJson = ko.mapping.fromJS({name: 'Scot', children: [{ id : 1, name : 'Alicw' }]});
-                self.hasMoreThreads = ko.observable(false);
-                self.threadLoading = ko.observable(false);
+                self.threads = ko.observableArray(@json($threads));
 
-                self.threadLoad = function() {
-                    if (!self.hasMoreThreads() || self.threadLoading()) return;
-                    if ($('.thread-wrapper').scrollTop() > ($('.thread-wrapper > ul').height() - $('.thread-wrapper').height() - 200)) {
-                        self.threadLoading(true);
-                        var url = 'https://sample.com/endpoint.json'
-                        $.ajax({
-                            type: "POST",
-                            dataType: "json",
-                            url: url,
-                            data: {
-                                // トークン
-                            }
-                        }).done(function (res) {
-                            if (res.thread) {
-                                self.threads(self.threads().concat(res.thread));
-                                self.hasMoreThreads(res.has_more_threads);
-                                self.lastLoadedMessageId(res.thread.at(-1)['message_id']);
-                            } else if (res.error) {
-                                $('.thread-wrapper > ul').append('<li>'+res.error+'</li>');
-                            }
-                            self.threadLoading(false);
-                        }).fail(function (ex) {
-                            $('.thread-wrapper > ul').append('<li>エラーが発生しました。</li>');
-                            self.threadLoading(false);
-                        });
-                    }
+                self.datetimeFormat = function(datetime) {
+                    return dayjs(datetime).format('YYYY/MM/DD HH:mm');
                 }
+
+                self.truncateMessage = function(message) {
+                    return message && message.length >= 20 ? message.substring(0, 19) + '...' : message;
+                };
             }
             // ko.applyBindings(new ViewModel(), document.getElementById('message'));
             ko.applyBindings(new ViewModel());
