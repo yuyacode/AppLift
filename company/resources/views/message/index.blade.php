@@ -24,6 +24,7 @@
                 </div>
             </div>
         </div>
+        <p data-bind="click: $root.requestGoApiSample">Go APIへリクエスト</p>
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -41,6 +42,15 @@
                 self.truncateMessage = function(message) {
                     return message && message.length >= 20 ? message.substring(0, 19) + '...' : message;
                 };
+
+                self.requestGoApiSample = function() {
+                    fetch('http://localhost:8080/records')
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log("Records:", data);
+                        })
+                        .catch(error => console.error('Error fetching records:', error));
+                }
             }
             // ko.applyBindings(new ViewModel(), document.getElementById('message'));
             ko.applyBindings(new ViewModel());
