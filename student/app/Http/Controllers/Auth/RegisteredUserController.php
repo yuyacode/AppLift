@@ -9,6 +9,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
 
@@ -40,6 +42,43 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
+
+        $url = config('api.message_api_base_url').'/register';
+
+        $headers = [
+            'Authorization' => 'Bearer '.config('api.message_api_key'),
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json',
+        ];
+
+        $data = [
+            'user_id'  => $user->id,
+            'app_kind' => 'student',
+        ];
+
+        try {
+            $response = Http::withHeaders($headers)->post($url, $data);
+            $response_body = $response->json();
+
+            if ($response->successful()) {
+                Log::info($response->status());
+                if (!is_null($response_body)) {
+                    Log::info($response_body['message'] ?? '');
+                    Log::info($response_body['detail'] ?? '');
+                }
+            } else {
+                Log::error($response->status());
+                if (!is_null($response_body)) {
+                    Log::error($response_body['message'] ?? '');
+                    Log::error($response_body['detail'] ?? '');
+                }
+                return redirect()->back()->withErrors(['登録中にエラーが発生しました。もう一度お試しください。']);
+            }
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            Log::error($e->getTraceAsString());
+            return redirect()->back()->withErrors(['登録中にエラーが発生しました。もう一度お試しください。']);
+        }
 
         event(new Registered($user));
 
