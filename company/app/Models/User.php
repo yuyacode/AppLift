@@ -60,6 +60,11 @@ class User extends Authenticatable
         return $this->belongsTo(CompanyInfo::class);
     }
 
+    public function messageApiCredential()
+    {
+        return $this->hasOne(MessageApiCredential::class);
+    }
+
     public function messageThreads()
     {
         return $this->hasMany(MessageThread::class, 'company_user_id', 'id');
