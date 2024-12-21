@@ -49,6 +49,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function messageApiCredential()
+    {
+        return $this->hasOne(MessageApiCredential::class);
+    }
+
     public function messageThreads()
     {
         return $this->hasMany(MessageThread::class, 'student_user_id', 'id');
