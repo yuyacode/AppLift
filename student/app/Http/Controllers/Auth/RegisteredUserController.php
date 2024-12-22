@@ -43,7 +43,7 @@ class RegisteredUserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        $url = config('api.message_api_base_url').'/register';
+        $url = config('api.message_api_base_url_backend').'/register';
 
         $headers = [
             'Authorization' => 'Bearer '.config('api.message_api_key'),
