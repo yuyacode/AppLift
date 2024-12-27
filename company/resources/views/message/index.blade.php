@@ -10,7 +10,7 @@
             <div class="flex_custom">
                 <div class="w30per br-gray">
                     <ul data-bind="foreach: threads">
-                        <li class="pt16 pb16 pointer" data-bind="css: { 'bt-gray': $index() !== 0 }">
+                        <li class="pt16 pb16 pointer" data-bind="css: { 'bt-gray': $index() !== 0 }, click: $root.getMessages">
                             <div class="flex_custom space-between_custom mb8 pr24">
                                 <p data-bind="text: '学生' + $data.student_user_id"></p>
                                 <p data-bind="text: $root.datetimeFormat($data.updated_at)" class="text-gray-500"></p>
@@ -24,15 +24,19 @@
                 </div>
             </div>
         </div>
-        <p data-bind="click: $root.requestGoApiSample">Go APIへリクエスト</p>
+        <p data-bind="click: $root.test">test</p>
     </div>
     <script>
+        const API_ENDPOINT = "{{ config('api.message_api_base_url_frontend') }}";
+
         document.addEventListener('DOMContentLoaded', function() {
             function ViewModel() {
-                var self = this;
+                const self = this;
+
                 // self.sample = ko.observable(1);
                 // self.sampleArray = ko.observableArray();
                 // self.sampleJson = ko.mapping.fromJS({name: 'Scot', children: [{ id : 1, name : 'Alicw' }]});
+
                 self.threads = ko.observableArray(@json($threads));
 
                 self.datetimeFormat = function(datetime) {
@@ -43,17 +47,131 @@
                     return message && message.length >= 20 ? message.substring(0, 19) + '...' : message;
                 };
 
-                self.requestGoApiSample = function() {
-                    fetch('http://localhost:8080/records')
-                        .then(response => response.json())
-                        .then(data => {
-                            console.log("Records:", data);
-                        })
-                        .catch(error => console.error('Error fetching records:', error));
+                self.getMessages = async function(data) {
+                    try {
+                        const requestData = {
+                            thread_id: data.id,
+                        };
+                        const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
+                        // レスポンスを使ってデータを更新
+                        console.log(response)
+                    } catch (error) {
+                        console.error(formatErrorInfo(error))
+                        alert('エラーが発生しました。もう一度お試しください。')
+                    }
                 }
             }
-            // ko.applyBindings(new ViewModel(), document.getElementById('message'));
             ko.applyBindings(new ViewModel());
+
+            // const users = await apiGetRequest('https://api.example.com/users', { search: 'John', page: 2 });
+            // // 実際のリクエストURL: https://api.example.com/users?search=John&page=2
+            async function apiGetRequest(endpoint, params = {}) {
+                try {
+                    const accessToken = await fetchAccessToken();
+                    const queryParams = new URLSearchParams(params).toString();
+                    const url = queryParams ? `${endpoint}?${queryParams}` : endpoint;                
+                    const response = await fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Accept': 'application/json',
+                        },
+                    });
+                    let data = await response.json();
+                    if (!response.ok) {
+                        if (response.status === 401 && data.message === 'token_expired') {
+                            await refreshAccessToken();
+                            data = await apiGetRequest(endpoint, body);
+                        } else {
+                            throw buildErrorObject(data.message, data.detail, response.status);
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            // const newUser = await apiPostRequest('https://api.example.com/users', { name: 'John', age: 30 });
+            // 実際のリクエストURL: https://api.example.com/users
+            // リクエストボディ: { "name": "John", "age": 30 }
+            async function apiPostRequest(endpoint, body = {}) {
+                try {
+                    const accessToken = await fetchAccessToken();
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(body),
+                    });
+                    let data = await response.json();
+                    if (!response.ok) {
+                        if (response.status === 401 && data.message === 'token_expired') {
+                            await refreshAccessToken();
+                            data = await apiGetRequest(endpoint, body);
+                        } else {
+                            throw buildErrorObject(data.message, data.detail, response.status);
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async function fetchAccessToken() {
+                try {
+                    const response = await fetch('/company/message/access-token/', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    const data = await response.json();
+                    if (!response.ok) {
+                        throw buildErrorObject(data.message, data.detail, response.status);
+                    }
+                    return data.access_token;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async function refreshAccessToken() {
+                try {
+                    const response = await fetch('/company/message/access-token/refresh', {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    if (!response.ok) {
+                        const data = await response.json();
+                        throw buildErrorObject(data.message, data.detail, response.status);
+                    }
+                    return;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            function buildErrorObject(message, detail, status) {
+                const error = new Error(message);
+                error.detail = detail ?? undefined;
+                error.status = status;
+                return error;
+            }
+
+            function formatErrorInfo(error) {
+                return {
+                    message: error.message,
+                    ...(error.detail && { detail: error.detail }),
+                    status: error.status,
+                };
+            }
         });
     </script>
 </x-app-layout>
