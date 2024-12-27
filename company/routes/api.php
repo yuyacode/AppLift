@@ -11,6 +11,7 @@ Route::middleware('auth')->group(function () {
                 ->name('access-token.')
                 ->group(function () {
                     Route::get('/', [MessageController::class, 'get_access_token'])->name('get');
+                    Route::post('/refresh', [MessageController::class, 'refresh_access_token'])->name('refresh');
                 }
             );
         }
