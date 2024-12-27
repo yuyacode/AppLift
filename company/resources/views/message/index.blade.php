@@ -28,6 +28,7 @@
     </div>
     <script>
         const API_ENDPOINT = "{{ config('api.message_api_base_url_frontend') }}";
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
         document.addEventListener('DOMContentLoaded', function() {
             function ViewModel() {
@@ -145,6 +146,7 @@
                     const response = await fetch('/company/message/access-token/refresh', {
                         method: 'POST',
                         headers: {
+                            'X-CSRF-TOKEN': csrfToken,
                             'Accept': 'application/json',
                         }
                     });
