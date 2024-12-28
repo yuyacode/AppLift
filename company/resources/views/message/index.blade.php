@@ -82,7 +82,7 @@
                     if (!response.ok) {
                         if (response.status === 401 && data.message === 'token_expired') {
                             await refreshAccessToken();
-                            data = await apiGetRequest(endpoint, body);
+                            data = await apiGetRequest(endpoint, params);
                         } else {
                             throw buildErrorObject(data.message, data.detail, response.status);
                         }
@@ -112,7 +112,7 @@
                     if (!response.ok) {
                         if (response.status === 401 && data.message === 'token_expired') {
                             await refreshAccessToken();
-                            data = await apiGetRequest(endpoint, body);
+                            data = await apiPostRequest(endpoint, body);
                         } else {
                             throw buildErrorObject(data.message, data.detail, response.status);
                         }
