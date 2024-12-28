@@ -15,8 +15,10 @@ class MessageController extends Controller
                     ->messageThreads()
                     ->orderBy('updated_at', 'desc')
                     ->with(['messages' => function ($query) {
-                        $query->orderBy('created_at', 'desc')  // statusがsendの中で、send_dateのdesc（その中でid desc）で1件取る（同じ時刻に複数のメッセージを予約送信している場合への対策）
-                        ->limit(1);
+                        $query->where('is_sent', 1)
+                            ->orderBy('sent_at', 'desc')
+                            ->orderBy('id', 'desc')
+                            ->limit(1);
                     }])
                     ->get();
 
