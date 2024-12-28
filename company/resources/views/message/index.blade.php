@@ -19,8 +19,11 @@
                         </li>
                     </ul>
                 </div>
-                <div class="ml24">
-                    <p>メッセージ詳細</p>
+                <div class="ml24" data-bind="foreach: messages">
+                    <div>
+                        <p data-bind="text: $data.content"></p>
+                        <!-- <p data-bind="text: $data.send_date"></p> -->
+                    </div>
                 </div>
             </div>
         </div>
@@ -39,6 +42,7 @@
                 // self.sampleJson = ko.mapping.fromJS({name: 'Scot', children: [{ id : 1, name : 'Alicw' }]});
 
                 self.threads = ko.observableArray(@json($threads));
+                self.messages = ko.observableArray();
 
                 self.datetimeFormat = function(datetime) {
                     return dayjs(datetime).format('YYYY/MM/DD HH:mm');
@@ -49,13 +53,13 @@
                 };
 
                 self.getMessages = async function(data) {
+                    self.messages.removeAll();
                     try {
                         const requestData = {
                             thread_id: data.id,
                         };
                         const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
-                        // レスポンスを使ってデータを更新
-                        console.log(response)
+                        self.messages(response);
                     } catch (error) {
                         console.error(formatErrorInfo(error))
                         alert('エラーが発生しました。もう一度お試しください。')
