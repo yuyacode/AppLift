@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\MessageIsSent;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -21,6 +22,13 @@ class Message extends Model
     protected $fillable = [
         // 後で定義する
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'is_sent' => MessageIsSent::class,
+        ];
+    }
 
     public function messageThread()
     {
