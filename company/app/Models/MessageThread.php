@@ -13,15 +13,6 @@ class MessageThread extends Model
 
     protected $connection = 'common';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        // 後で定義する
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'company_user_id', 'id');

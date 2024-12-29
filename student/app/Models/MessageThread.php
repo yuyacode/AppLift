@@ -18,7 +18,8 @@ class MessageThread extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        // 後で定義する
+        'company_user_id',
+        'student_user_id',
     ];
 
     public function user()
