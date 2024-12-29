@@ -14,15 +14,6 @@ class Message extends Model
 
     protected $connection = 'common';
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        // 後で定義する
-    ];
-
     protected function casts(): array
     {
         return [
