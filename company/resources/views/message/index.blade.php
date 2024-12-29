@@ -20,9 +20,15 @@
                     </ul>
                 </div>
                 <div class="ml24" data-bind="foreach: messages">
-                    <div>
-                        <p data-bind="text: $data.content"></p>
-                        <!-- <p data-bind="text: $data.send_date"></p> -->
+                    <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
+                        <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
+                            <p data-bind="text: $data.content"></p>
+                            <div class="flex_custom justify-end">
+                                <p class="fz12 text-gray-500 mr8">編集</p>
+                                <p class="fz12 text-gray-500">削除</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at.Time) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
                     </div>
                 </div>
             </div>
