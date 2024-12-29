@@ -32,6 +32,13 @@
     <script>
         const API_ENDPOINT = "{{ config('api.message_api_base_url_frontend') }}";
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const notyf = new Notyf({
+            position: {
+                x: 'right',
+                y: 'bottom'
+            },
+            ripple: true
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             function ViewModel() {
@@ -62,7 +69,7 @@
                         self.messages(response);
                     } catch (error) {
                         console.error(formatErrorInfo(error))
-                        alert('エラーが発生しました。もう一度お試しください。')
+                        showErrNotification()
                     }
                 }
             }
@@ -137,6 +144,9 @@
                     });
                     const data = await response.json();
                     if (!response.ok) {
+                        if (response.status === 401) {
+                            window.location.href = '/company/login';
+                        }
                         throw buildErrorObject(data.message, data.detail, response.status);
                     }
                     return data.access_token;
@@ -177,6 +187,14 @@
                     ...(error.detail && { detail: error.detail }),
                     status: error.status,
                 };
+            }
+
+            function showErrNotification() {
+                notyf.open({
+                    type: 'error',
+                    dismissible: true,
+                    message: '<b>エラーが発生しました</b><br />もう一度お試しください'
+                });
             }
         });
     </script>
