@@ -5,35 +5,43 @@
             <p class="text-sm"><a href="{{ route('review.edit') }}">レビュー</a></p>
         </div>
     </x-slot>
-    <div id="message" class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
+    <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
             <div class="flex_custom">
-                <div class="w30per br-gray">
+                <div id="threads" class="w25per h500 y-scroll br-gray">
                     <ul data-bind="foreach: threads">
-                        <li class="pt16 pb16 pointer" data-bind="css: { 'bt-gray': $index() !== 0 }, click: $root.getMessages">
-                            <div class="flex_custom space-between_custom mb8 pr24">
-                                <p data-bind="text: '学生' + $data.student_user_id"></p>
-                                <p data-bind="text: $root.datetimeFormat($data.updated_at)" class="text-gray-500"></p>
+                        <li class="pt16 pb16 pr8 pl8 pointer" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}, click: $root.getMessages">
+                            <div class="flex_custom space-between_custom mb8">
+                                <p data-bind="text: '学生' + $data.student_user_id" class="fz14"></p>
+                                <p data-bind="text: $root.datetimeFormat($data.last_activity_at)" class="fz12 text-gray-500"></p>
                             </div>
-                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content) : '（メッセージがありません）'" class="pr24 text-gray-500"></p>
+                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content) : ''" class="fz14 pr24 text-gray-500"></p>
                         </li>
                     </ul>
                 </div>
-                <div class="ml24" data-bind="foreach: messages">
-                    <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
-                        <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
-                            <p data-bind="text: $data.content"></p>
-                            <div class="flex_custom justify-end">
-                                <p class="fz12 text-gray-500 mr8">編集</p>
-                                <p class="fz12 text-gray-500">削除</p>
+                <div id="messages" class="w75per h500 ml24 y-scroll">
+                    <!-- ko if: $root.selectedThreadId() -->
+                        <!-- ko if: $root.messages().length > 0 -->
+                            <div data-bind="foreach: messages">
+                                <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
+                                    <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
+                                        <p data-bind="text: $data.content" class="fz14"></p>
+                                        <div class="flex_custom justify-end">
+                                            <p class="fz12 text-gray-500 mr8 pointer">編集</p>
+                                            <p class="fz12 text-gray-500 pointer">削除</p>
+                                        </div>
+                                    </div>
+                                    <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at.Time) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
+                                </div>
                             </div>
-                        </div>
-                        <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at.Time) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
-                    </div>
+                        <!-- /ko -->
+                        <!-- ko if: $root.messages().length === 0 -->
+                            <p class="fz14">メッセージがありません</p>
+                        <!-- /ko -->
+                    <!-- /ko -->
                 </div>
             </div>
         </div>
-        <p data-bind="click: $root.test">test</p>
     </div>
     <script>
         const API_ENDPOINT = "{{ config('api.message_api_base_url_frontend') }}";
@@ -56,23 +64,28 @@
 
                 self.threads = ko.observableArray(@json($threads));
                 self.messages = ko.observableArray();
+                self.selectedThreadId = ko.observable();
 
                 self.datetimeFormat = function(datetime) {
                     return dayjs(datetime).format('YYYY/MM/DD HH:mm');
                 }
 
                 self.truncateMessage = function(message) {
-                    return message && message.length >= 20 ? message.substring(0, 19) + '...' : message;
+                    return message && message.length >= 17 ? message.substring(0, 16) + '...' : message;
                 };
 
                 self.getMessages = async function(data) {
                     self.messages.removeAll();
+                    self.selectedThreadId(undefined);
                     try {
                         const requestData = {
                             thread_id: data.id,
                         };
                         const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
                         self.messages(response);
+                        self.selectedThreadId(data.id);
+                        const messagesScroll = document.getElementById('messages');
+                        messagesScroll.scrollTop = messagesScroll.scrollHeight;
                     } catch (error) {
                         console.error(formatErrorInfo(error))
                         showErrNotification()

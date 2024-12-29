@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
@@ -10,10 +11,21 @@ use Illuminate\View\View;
 class MessageController extends Controller
 {
     public function index(Request $request): View
-    {
+    {        
         $threads = $request->user()
                     ->messageThreads()
-                    ->orderBy('updated_at', 'desc')
+                    ->leftJoinSub(
+                        DB::table('common.messages')
+                            ->select('message_thread_id', DB::raw('MAX(sent_at) as latest_sent_at'))
+                            ->where('is_sent', 1)
+                            ->groupBy('message_thread_id'),
+                        'latest_sent_at_infos',
+                        'message_threads.id',
+                        '=',
+                        'latest_sent_at_infos.message_thread_id'
+                    )
+                    ->select('message_threads.*', DB::raw('COALESCE(latest_sent_at_infos.latest_sent_at, message_threads.created_at) as last_activity_at'))
+                    ->orderByDesc('last_activity_at')
                     ->with(['messages' => function ($query) {
                         $query->where('is_sent', 1)
                             ->orderBy('sent_at', 'desc')

@@ -2,12 +2,24 @@
     font-size: 12px;
 }
 
+.fz14 {
+    font-size: 14px;
+}
+
 .bg-gray {
     background-color: #eef0f4;
 }
 
-.w30per {
-    width: 30%;
+.w25per {
+    width: 25%;
+}
+
+.w75per {
+    width: 75%;
+}
+
+.h500 {
+    height: 500px;
 }
 
 .max-w70per {
@@ -30,12 +42,20 @@
     padding-bottom: 16px;
 }
 
+.pr8 {
+    padding-right: 8px;
+}
+
 .pr12 {
     padding-right: 12px;
 }
 
 .pr24 {
     padding-right: 24px;
+}
+
+.pl8 {
+    padding-left: 8px;
 }
 
 .pl12 {
@@ -104,6 +124,10 @@
 
 .align-end {
     align-items: flex-end;
+}
+
+.y-scroll {
+    overflow-y: scroll;
 }
 
 .pointer {
