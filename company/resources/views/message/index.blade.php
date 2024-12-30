@@ -8,7 +8,7 @@
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
             <div class="flex_custom">
-                <div id="threads" class="w25per h500 y-scroll br-gray">
+                <div class="w25per h500 y-scroll br-gray">
                     <ul data-bind="foreach: threads">
                         <li class="pt16 pb16 pr8 pl8 pointer" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}, click: $root.getMessages">
                             <div class="flex_custom space-between_custom mb8">
@@ -19,10 +19,10 @@
                         </li>
                     </ul>
                 </div>
-                <div id="messages" class="w75per h500 ml24 y-scroll">
+                <div class="w75per ml24">
                     <!-- ko if: $root.selectedThreadId() -->
                         <!-- ko if: $root.messages().length > 0 -->
-                            <div data-bind="foreach: messages">
+                            <div data-bind="foreach: messages" class="h400 y-scroll" id="messages">
                                 <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
                                     <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
                                         <p data-bind="text: $data.content" class="fz14"></p>
@@ -36,8 +36,41 @@
                             </div>
                         <!-- /ko -->
                         <!-- ko if: $root.messages().length === 0 -->
-                            <p class="fz14">メッセージがありません</p>
+                            <div class="h400">
+                                <p class="fz14">メッセージがありません</p>
+                            </div>
                         <!-- /ko -->
+                        <div class="flex_custom">
+                            <textarea name="new_message_content" data-bind="value: newMessageContent" class="fz14 w550 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block"></textarea>
+                            <div class="ml24">
+                                <div>
+                                    <input type="checkbox" name="is_reserved_send" id="is_reserved_send" data-bind="checked: $root.isReservedSend" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                    <label for="is_reserved_send" class="fz14">送信日時を設定する</label>
+                                </div>
+                                <!-- ko if: $root.isReservedSend() -->
+                                    <div class="flex_custom mt8">
+                                        <div class="mr8">
+                                            <input type="date" name="reserved_send_date" data-bind="value: reservedSendDate" class="fz14 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                        </div>
+                                        <div>
+                                            <select name="reserved_send_time" data-bind="value: reservedSendTime" class="fz14 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm">
+                                                <option value="09:00">09:00</option>
+                                                <option value="10:00">10:00</option>
+                                                <option value="11:00">11:00</option>
+                                                <option value="12:00">12:00</option>
+                                                <option value="13:00">13:00</option>
+                                                <option value="14:00">14:00</option>
+                                                <option value="15:00">15:00</option>
+                                                <option value="16:00">16:00</option>
+                                                <option value="17:00">17:00</option>
+                                                <option value="18:00">18:00</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                <!-- /ko -->
+                                <div data-bind="click: $root.addMessage" class="fz14 w100 h40 p8 mt8 pointer button"><p>送信する</p></div>
+                            </div>
+                        </div>
                     <!-- /ko -->
                 </div>
             </div>
@@ -65,9 +98,13 @@
                 self.threads = ko.observableArray(@json($threads));
                 self.messages = ko.observableArray();
                 self.selectedThreadId = ko.observable();
+                self.newMessageContent = ko.observable('');
+                self.isReservedSend = ko.observable(false);
+                self.reservedSendDate = ko.observable(new Date().toISOString().split('T')[0]);
+                self.reservedSendTime = ko.observable();
 
                 self.datetimeFormat = function(datetime) {
-                    return dayjs(datetime).format('YYYY/MM/DD HH:mm');
+                    return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss');
                 }
 
                 self.truncateMessage = function(message) {
@@ -77,6 +114,8 @@
                 self.getMessages = async function(data) {
                     self.messages.removeAll();
                     self.selectedThreadId(undefined);
+                    self.newMessageContent('');
+                    self.isReservedSend(false);
                     try {
                         const requestData = {
                             thread_id: data.id,
@@ -84,12 +123,37 @@
                         const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
                         self.messages(response);
                         self.selectedThreadId(data.id);
-                        const messagesScroll = document.getElementById('messages');
-                        messagesScroll.scrollTop = messagesScroll.scrollHeight;
+                        if (self.messages().length > 0) {
+                            const messagesScroll = document.getElementById('messages');
+                            messagesScroll.scrollTop = messagesScroll.scrollHeight;
+                        }
                     } catch (error) {
                         console.error(formatErrorInfo(error))
-                        showErrNotification()
+                        showGeneralErrNotification()
                     }
+                    return true;
+                }
+
+                self.addMessage = async function() {
+                    if (self.newMessageContent() === '') {
+                        notyf.open({
+                            type: 'error',
+                            dismissible: true,
+                            message: 'メッセージ内容を入力してください'
+                        });
+                    }
+                    try {
+                        const requestData = {
+                            message_thread_id: self.selectedThreadId(),
+                            content: self.newMessageContent(),
+                            is_sent: self.isReservedSend() ? 0 : 1,
+                            sent_at: self.isReservedSend() ? self.reservedSendDate() + ' ' + self.reservedSendTime() + ':00' : self.datetimeFormat(new Date().toLocaleString()),
+                        };
+                    } catch (error) {
+                        console.error(formatErrorInfo(error))
+                        showGeneralErrNotification()
+                    }
+                    return true;
                 }
             }
             ko.applyBindings(new ViewModel());
@@ -208,7 +272,7 @@
                 };
             }
 
-            function showErrNotification() {
+            function showGeneralErrNotification() {
                 notyf.open({
                     type: 'error',
                     dismissible: true,

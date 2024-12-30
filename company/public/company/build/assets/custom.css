@@ -18,12 +18,32 @@
     width: 75%;
 }
 
+.w100 {
+    width: 100px;
+}
+
+.w550 {
+    width: 550px;
+}
+
+.h40 {
+    height: 40px;
+}
+
+.h400 {
+    height: 400px;
+}
+
 .h500 {
     height: 500px;
 }
 
 .max-w70per {
     max-width: 70%;
+}
+
+.p8 {
+    padding: 8px;
 }
 
 .pt8 {
@@ -60,6 +80,10 @@
 
 .pl12 {
     padding-left: 12px;
+}
+
+.mt8 {
+    margin-top: 8px;
 }
 
 .mb4 {
@@ -132,4 +156,15 @@
 
 .pointer {
     cursor: pointer;
+}
+
+.button {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid rgb(209 213 219);
+    border-radius: 4px;
+    line-height: 1;
 }
