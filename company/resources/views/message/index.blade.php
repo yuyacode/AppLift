@@ -74,6 +74,7 @@
                     <!-- /ko -->
                 </div>
             </div>
+            <p data-bind="click: $root.test">test</p>
         </div>
     </div>
     <script>
@@ -98,7 +99,11 @@
                 self.threads = ko.observableArray(
                     @json($threads).map(thread => ({
                         ...thread,
-                        last_activity_at: ko.observable(thread.last_activity_at)
+                        last_activity_at: ko.observable(thread.last_activity_at),
+                        messages: thread.messages.map(message => ({
+                            message_thread_id: message.message_thread_id,
+                            content: ko.observable(message.content),
+                        }))
                     }))
                 );
                 self.messages = ko.observableArray();
@@ -162,11 +167,16 @@
                         const response = await apiPostRequest(`${API_ENDPOINT}`, requestData);
                         if (requestData.is_sent) {
                             self.threads()[self.selectedThreadIndex()].last_activity_at(requestData.sent_at);
+                            self.threads()[self.selectedThreadIndex()].messages[0].content(requestData.content);
                         }
                     } catch (error) {
                         console.error(formatErrorInfo(error))
                         showGeneralErrNotification()
                     }
+                }
+
+                self.test = async function() {
+                    console.log(self.threads())
                 }
             }
             ko.applyBindings(new ViewModel());
