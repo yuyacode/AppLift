@@ -172,6 +172,8 @@
                             sent_at: self.isReservedSend() ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true) : self.datetimeFormat(new Date().toLocaleString(), true),
                         };
                         const response = await apiPostRequest(`${API_ENDPOINT}`, data);
+                        self.newMessageContent('');
+                        self.isReservedSend(false);
                         if (data.is_sent) {
                             self.threads()[self.selectedThreadIndex()].last_activity_at(data.sent_at);
                             self.threads()[self.selectedThreadIndex()].messages[0].content(data.content);
@@ -181,14 +183,19 @@
                         if (self.messages().length === 0) {
                             self.messages.push(data);
                         } else {
+                            let sorted = false;
                             for (let i = self.messages().length - 1; i >= 0; i--) {
                                 if (new Date(self.messages()[i].sent_at) <= new Date(data.sent_at)) {
                                     self.messages.splice(i + 1, 0, data);
-                                    return;
+                                    sorted = true;
                                 }
                             }
-                            self.messages.unshift(data);
+                            if (!sorted) {
+                                self.messages.unshift(data);
+                            }
                         }
+                        const messagesScroll = document.getElementById('messages');
+                        messagesScroll.scrollTop = messagesScroll.scrollHeight;
                     } catch (error) {
                         console.error(formatErrorInfo(error))
                         showGeneralErrNotification()
