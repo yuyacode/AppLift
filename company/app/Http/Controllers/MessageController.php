@@ -11,7 +11,7 @@ use Illuminate\View\View;
 class MessageController extends Controller
 {
     public function index(Request $request): View
-    {        
+    {
         $threads = $request->user()
                     ->messageThreads()
                     ->leftJoinSub(
@@ -30,7 +30,8 @@ class MessageController extends Controller
                         $query->where('is_sent', 1)
                             ->orderBy('sent_at', 'desc')
                             ->orderBy('id', 'desc')
-                            ->limit(1);
+                            ->limit(1)
+                            ->select('message_thread_id', 'content');
                     }])
                     ->get();
 
