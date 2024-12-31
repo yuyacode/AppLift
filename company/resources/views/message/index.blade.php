@@ -144,6 +144,13 @@
                         self.selectedThreadId(id);
                         self.selectedThreadIndex(index);
                         if (self.messages().length > 0) {
+                            for (let i = self.messages().length - 1; i >= 0; i--) {
+                                if (self.messages()[i].is_sent === 1) {
+                                    self.threads()[index].last_activity_at(self.messages()[i].sent_at);
+                                    self.threads()[index].messages[0].content(self.messages()[i].content);
+                                    break;
+                                }
+                            }
                             const messagesScroll = document.getElementById('messages');
                             messagesScroll.scrollTop = messagesScroll.scrollHeight;
                         }
