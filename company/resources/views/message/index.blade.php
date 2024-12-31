@@ -15,7 +15,7 @@
                                 <p data-bind="text: '学生' + $data.student_user_id" class="fz14"></p>
                                 <p data-bind="text: $root.datetimeFormat($data.last_activity_at())" class="fz12 text-gray-500"></p>
                             </div>
-                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content) : ''" class="fz14 pr24 text-gray-500"></p>
+                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content()) : ''" class="fz14 pr24 text-gray-500"></p>
                         </li>
                     </ul>
                 </div>
@@ -100,10 +100,17 @@
                     @json($threads).map(thread => ({
                         ...thread,
                         last_activity_at: ko.observable(thread.last_activity_at),
-                        messages: thread.messages.map(message => ({
-                            message_thread_id: message.message_thread_id,
-                            content: ko.observable(message.content),
-                        }))
+                        messages: thread.messages.length > 0
+                            ?
+                            thread.messages.map(message => ({
+                                message_thread_id: message.message_thread_id,
+                                content: ko.observable(message.content),
+                            }))
+                            :
+                            [{
+                                message_thread_id: thread.id,
+                                content: ko.observable(''),
+                            }]
                     }))
                 );
                 self.messages = ko.observableArray();
@@ -177,6 +184,7 @@
 
                 self.test = async function() {
                     console.log(self.threads())
+                    // console.log(self.messages())
                 }
             }
             ko.applyBindings(new ViewModel());
