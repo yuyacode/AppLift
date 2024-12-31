@@ -163,7 +163,7 @@
                         return;
                     }
                     try {
-                        const requestData = {
+                        const data = {
                             message_thread_id: self.selectedThreadId(),
                             is_from_company: 1,
                             is_from_student: 0,
@@ -171,10 +171,23 @@
                             is_sent: self.isReservedSend() ? 0 : 1,
                             sent_at: self.isReservedSend() ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true) : self.datetimeFormat(new Date().toLocaleString(), true),
                         };
-                        const response = await apiPostRequest(`${API_ENDPOINT}`, requestData);
-                        if (requestData.is_sent) {
-                            self.threads()[self.selectedThreadIndex()].last_activity_at(requestData.sent_at);
-                            self.threads()[self.selectedThreadIndex()].messages[0].content(requestData.content);
+                        const response = await apiPostRequest(`${API_ENDPOINT}`, data);
+                        if (data.is_sent) {
+                            self.threads()[self.selectedThreadIndex()].last_activity_at(data.sent_at);
+                            self.threads()[self.selectedThreadIndex()].messages[0].content(data.content);
+                        }
+                        delete data.message_thread_id;
+                        data.id = response.id;
+                        if (self.messages().length === 0) {
+                            self.messages.push(data);
+                        } else {
+                            for (let i = self.messages().length - 1; i >= 0; i--) {
+                                if (new Date(self.messages()[i].sent_at) <= new Date(data.sent_at)) {
+                                    self.messages.splice(i + 1, 0, data);
+                                    return;
+                                }
+                            }
+                            self.messages.unshift(data);
                         }
                     } catch (error) {
                         console.error(formatErrorInfo(error))
@@ -183,8 +196,8 @@
                 }
 
                 self.test = async function() {
-                    console.log(self.threads())
-                    // console.log(self.messages())
+                    // console.log(self.threads())
+                    console.log(self.messages())
                 }
             }
             ko.applyBindings(new ViewModel());
