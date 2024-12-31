@@ -26,10 +26,12 @@
                                 <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
                                     <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
                                         <p data-bind="text: $data.content" class="fz14"></p>
-                                        <div class="flex_custom justify-end">
-                                            <p class="fz12 text-gray-500 mr8 pointer">編集</p>
-                                            <p class="fz12 text-gray-500 pointer">削除</p>
-                                        </div>
+                                        <!-- ko if: $data.is_from_company === 1 -->
+                                            <div class="flex_custom justify-end">
+                                                <p class="fz12 text-gray-500 mr8 pointer">編集</p>
+                                                <p class="fz12 text-gray-500 pointer">削除</p>
+                                            </div>
+                                        <!-- /ko -->
                                     </div>
                                     <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
                                 </div>
