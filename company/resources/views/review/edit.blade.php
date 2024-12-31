@@ -17,35 +17,35 @@
                     <x-error />
 
                     <p>
-                        <label class="block font-medium text-gray-700">タイトル</label>
-                        <input type="text" name="title" value="{{ data_get($data, 'title') }}" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                        <label class="fz14 block font-medium text-gray-700">タイトル</label>
+                        <input type="text" name="title" value="{{ data_get($data, 'title') }}" class="fz14 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                     </p>
 
-                    <p class="block font-medium text-gray-700">公開設定</p>
+                    <p class="fz14 block font-medium text-gray-700">公開設定</p>
                     <div class="flex_custom">
-                        <p class="mr24">
+                        <p class="fz14 mr24">
                             <input type="radio" name="status" value="1" class="mr8" {{ data_get($data, 'status') == '1' ? 'checked' : '' }}>公開
                         </p>
-                        <p>
+                        <p class="fz14">
                             <input type="radio" name="status" value="0" class="mr8" {{ data_get($data, 'status') == '0' ? 'checked' : '' }}>下書き
                         </p>
                     </div>
 
                     @foreach ($review->reviewAnswer as $answer)
                         <div style="margin-top: 36px;">
-                            <label class="block font-medium text-gray-700 mb8">{{ $answer->reviewItem->name }}</label>
+                            <label class="fz14 block font-medium text-gray-700 mb8">{{ $answer->reviewItem->name }}</label>
 
                             <div class="mb8">
-                                <p class="font-medium text-sm text-gray-700">点数</p>
+                                <p class="fz12 font-medium text-sm text-gray-700">点数</p>
                                 <input type="text"
                                        value="{{ data_get($answer, 'score') }}" 
                                        name="answers[{{ $answer->id }}][score]" 
                                        placeholder="80"
-                                       class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
+                                       class="fz14 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">
                             </div>
                             <div>
-                                <p class="font-medium text-sm text-gray-700">コメント</p>
-                                <textarea name="answers[{{ $answer->id }}][answer]" class="border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">{{ data_get($answer, 'answer') }}</textarea>
+                                <p class="fz12 font-medium text-sm text-gray-700">コメント</p>
+                                <textarea name="answers[{{ $answer->id }}][answer]" class="fz14 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm mt-1 block w-full">{{ data_get($answer, 'answer') }}</textarea>
                             </div>
                         </div>
                     @endforeach
