@@ -10,10 +10,10 @@
             <div class="flex_custom">
                 <div class="w25per h500 y-scroll br-gray">
                     <ul data-bind="foreach: threads">
-                        <li class="pt16 pb16 pr8 pl8 pointer" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}, click: $root.getMessages">
+                        <li class="pt16 pb16 pr8 pl8 pointer" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}, click: function() {$root.getMessages($data.id, $index());}">
                             <div class="flex_custom space-between_custom mb8">
                                 <p data-bind="text: '学生' + $data.student_user_id" class="fz14"></p>
-                                <p data-bind="text: $root.datetimeFormat($data.last_activity_at)" class="fz12 text-gray-500"></p>
+                                <p data-bind="text: $root.datetimeFormat($data.last_activity_at())" class="fz12 text-gray-500"></p>
                             </div>
                             <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content) : ''" class="fz14 pr24 text-gray-500"></p>
                         </li>
@@ -31,7 +31,7 @@
                                             <p class="fz12 text-gray-500 pointer">削除</p>
                                         </div>
                                     </div>
-                                    <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at.Time) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
+                                    <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
                                 </div>
                             </div>
                         <!-- /ko -->
@@ -95,34 +95,42 @@
                 // self.sampleArray = ko.observableArray();
                 // self.sampleJson = ko.mapping.fromJS({name: 'Scot', children: [{ id : 1, name : 'Alicw' }]});
 
-                self.threads = ko.observableArray(@json($threads));
+                self.threads = ko.observableArray(
+                    @json($threads).map(thread => ({
+                        ...thread,
+                        last_activity_at: ko.observable(thread.last_activity_at)
+                    }))
+                );
                 self.messages = ko.observableArray();
                 self.selectedThreadId = ko.observable();
+                self.selectedThreadIndex = ko.observable();
                 self.newMessageContent = ko.observable('');
                 self.isReservedSend = ko.observable(false);
                 self.reservedSendDate = ko.observable(new Date().toISOString().split('T')[0]);
-                self.reservedSendTime = ko.observable();
+                self.reservedSendTime = ko.observable('09:00');
 
-                self.datetimeFormat = function(datetime) {
-                    return dayjs(datetime).format('YYYY-MM-DD HH:mm:ss');
+                self.datetimeFormat = function(datetime, ISO = false) {
+                    return ISO ? dayjs(datetime).format('YYYY-MM-DD[T]HH:mm:ss+09:00') : dayjs(datetime).format('YYYY-MM-DD HH:mm:ss');
                 }
 
                 self.truncateMessage = function(message) {
                     return message && message.length >= 17 ? message.substring(0, 16) + '...' : message;
                 };
 
-                self.getMessages = async function(data) {
+                self.getMessages = async function(id, index) {
                     self.messages.removeAll();
                     self.selectedThreadId(undefined);
+                    self.selectedThreadIndex(undefined);
                     self.newMessageContent('');
                     self.isReservedSend(false);
                     try {
                         const requestData = {
-                            thread_id: data.id,
+                            thread_id: id,
                         };
                         const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
                         self.messages(response);
-                        self.selectedThreadId(data.id);
+                        self.selectedThreadId(id);
+                        self.selectedThreadIndex(index);
                         if (self.messages().length > 0) {
                             const messagesScroll = document.getElementById('messages');
                             messagesScroll.scrollTop = messagesScroll.scrollHeight;
@@ -131,7 +139,6 @@
                         console.error(formatErrorInfo(error))
                         showGeneralErrNotification()
                     }
-                    return true;
                 }
 
                 self.addMessage = async function() {
@@ -141,19 +148,25 @@
                             dismissible: true,
                             message: 'メッセージ内容を入力してください'
                         });
+                        return;
                     }
                     try {
                         const requestData = {
                             message_thread_id: self.selectedThreadId(),
+                            is_from_company: 1,
+                            is_from_student: 0,
                             content: self.newMessageContent(),
                             is_sent: self.isReservedSend() ? 0 : 1,
-                            sent_at: self.isReservedSend() ? self.reservedSendDate() + ' ' + self.reservedSendTime() + ':00' : self.datetimeFormat(new Date().toLocaleString()),
+                            sent_at: self.isReservedSend() ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true) : self.datetimeFormat(new Date().toLocaleString(), true),
                         };
+                        const response = await apiPostRequest(`${API_ENDPOINT}`, requestData);
+                        if (requestData.is_sent) {
+                            self.threads()[self.selectedThreadIndex()].last_activity_at(requestData.sent_at);
+                        }
                     } catch (error) {
                         console.error(formatErrorInfo(error))
                         showGeneralErrNotification()
                     }
-                    return true;
                 }
             }
             ko.applyBindings(new ViewModel());
