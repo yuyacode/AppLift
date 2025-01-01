@@ -22,23 +22,30 @@
                 <div class="w75per ml24">
                     <!-- ko if: $root.selectedThreadId() -->
                         <!-- ko if: $root.messages().length > 0 -->
-                            <div data-bind="foreach: messages" class="h400 y-scroll" id="messages">
+                            <div data-bind="foreach: messages" class="h420 y-scroll" id="messages">
                                 <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_student === 1, 'align-end': $data.is_from_company === 1}">
                                     <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
-                                        <p data-bind="text: $data.content" class="fz14"></p>
+                                        <p data-bind="visible: $root.showMsgContent($data.id), text: $data.content()" class="fz14"></p>
                                         <!-- ko if: $data.is_from_company === 1 -->
-                                            <div class="flex_custom justify-end">
-                                                <p class="fz12 text-gray-500 mr8 pointer">編集</p>
+                                            <div data-bind="visible: $root.showMsgContent($data.id)" class="flex_custom justify-end mt-1">
+                                                <p data-bind="click: function() {$root.editingMessageId($data.id)}" class="fz12 text-gray-500 mr8 pointer">編集</p>
                                                 <p class="fz12 text-gray-500 pointer">削除</p>
                                             </div>
                                         <!-- /ko -->
+                                        <div data-bind="visible: $root.showMsgEditForm($data.id)">
+                                            <textarea data-bind="attr: {name: 'edit_message_content[' + $index() + ']'}, value: $data.content()" class="fz14 w550 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block"></textarea>
+                                        </div>
+                                        <div data-bind="visible: $root.showMsgEditForm($data.id)" class="flex_custom justify-end mt-1">
+                                            <p data-bind="click: function() {$root.editMessage($data.id, $index())}" class="fz12 text-gray-500 mr8 pointer">保存</p>
+                                            <p data-bind="click: function() {$root.editingMessageId(undefined)}" class="fz12 text-gray-500 pointer">やめる</p>
+                                        </div>
                                     </div>
                                     <p class="text-gray-500 fz12" data-bind="text: $root.datetimeFormat($data.sent_at) + ($data.is_sent === 0 ? ' 送信予定' : '')"></p>
                                 </div>
                             </div>
                         <!-- /ko -->
                         <!-- ko if: $root.messages().length === 0 -->
-                            <div class="h400">
+                            <div class="h420">
                                 <p class="fz14">メッセージがありません</p>
                             </div>
                         <!-- /ko -->
@@ -93,11 +100,6 @@
         document.addEventListener('DOMContentLoaded', function() {
             function ViewModel() {
                 const self = this;
-
-                // self.sample = ko.observable(1);
-                // self.sampleArray = ko.observableArray();
-                // self.sampleJson = ko.mapping.fromJS({name: 'Scot', children: [{ id : 1, name : 'Alicw' }]});
-
                 self.threads = ko.observableArray(
                     @json($threads).map(thread => ({
                         ...thread,
@@ -105,11 +107,13 @@
                         messages: thread.messages.length > 0
                             ?
                             thread.messages.map(message => ({
+                                id: message.id,
                                 message_thread_id: message.message_thread_id,
                                 content: ko.observable(message.content),
                             }))
                             :
                             [{
+                                id: null,
                                 message_thread_id: thread.id,
                                 content: ko.observable(''),
                             }]
@@ -122,6 +126,7 @@
                 self.isReservedSend = ko.observable(false);
                 self.reservedSendDate = ko.observable(new Date().toISOString().split('T')[0]);
                 self.reservedSendTime = ko.observable('09:00');
+                self.editingMessageId = ko.observable();
 
                 self.datetimeFormat = function(datetime, ISO = false) {
                     return ISO ? dayjs(datetime).format('YYYY-MM-DD[T]HH:mm:ss+09:00') : dayjs(datetime).format('YYYY-MM-DD HH:mm:ss');
@@ -142,14 +147,15 @@
                             thread_id: id,
                         };
                         const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
-                        self.messages(response);
                         self.selectedThreadId(id);
                         self.selectedThreadIndex(index);
+                        self.messages(self.observeMessageContent(response));
                         if (self.messages().length > 0) {
                             for (let i = self.messages().length - 1; i >= 0; i--) {
                                 if (self.messages()[i].is_sent === 1) {
                                     self.threads()[index].last_activity_at(self.messages()[i].sent_at);
-                                    self.threads()[index].messages[0].content(self.messages()[i].content);
+                                    self.threads()[index].messages[0].id = self.messages()[i].id;
+                                    self.threads()[index].messages[0].content(self.messages()[i].content());
                                     break;
                                 }
                             }
@@ -178,17 +184,21 @@
                             is_from_student: 0,
                             content: self.newMessageContent(),
                             is_sent: self.isReservedSend() ? 0 : 1,
-                            sent_at: self.isReservedSend() ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true) : self.datetimeFormat(new Date().toLocaleString(), true),
+                            sent_at: self.isReservedSend()
+                                        ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true)
+                                        : self.datetimeFormat(new Date().toLocaleString(), true),
                         };
                         const response = await apiPostRequest(`${API_ENDPOINT}`, data);
                         self.newMessageContent('');
                         self.isReservedSend(false);
                         if (data.is_sent) {
                             self.threads()[self.selectedThreadIndex()].last_activity_at(data.sent_at);
+                            self.threads()[self.selectedThreadIndex()].messages[0].id = response.id;
                             self.threads()[self.selectedThreadIndex()].messages[0].content(data.content);
                         }
                         delete data.message_thread_id;
                         data.id = response.id;
+                        data.content = ko.observable(data.content)
                         if (self.messages().length === 0) {
                             self.messages.push(data);
                         } else {
@@ -211,9 +221,57 @@
                     }
                 }
 
+                self.editMessage = async function(id, index) {
+                    content = document.querySelector('textarea[name="edit_message_content[' + index + ']"').value;
+                    if (content === '') {
+                        notyf.open({
+                            type: 'error',
+                            dismissible: true,
+                            message: 'メッセージ内容を入力してください'
+                        });
+                        return;
+                    }
+                    try {
+                        const data = {
+                            content: content,
+                        };
+                        const response = await apiPatchRequest(`${API_ENDPOINT}/${id}`, data);
+                        self.messages()[index].content(content);
+                        if (self.threads()[self.selectedThreadIndex()].messages[0].id === id) {
+                            self.threads()[self.selectedThreadIndex()].messages[0].content(content);
+                        }
+                    } catch (error) {
+                        console.error(formatErrorInfo(error))
+                        showGeneralErrNotification()
+                    }
+                    self.editingMessageId(undefined);
+                }
+
+                self.observeMessageContent = function(data) {
+                    return data.map(item => ({
+                        id:              item.id,
+                        is_from_company: item.is_from_company,
+                        is_from_student: item.is_from_student,
+                        content:         ko.observable(item.content),
+                        is_sent:         item.is_sent,
+                        sent_at:         item.sent_at,
+                    }));
+                }
+
+                self.showMsgContent = function(id) {
+                    return ko.computed(function() {
+                        return !self.editingMessageId() || self.editingMessageId() !== id;
+                    });
+                };
+
+                self.showMsgEditForm = function(id) {
+                    return ko.computed(function() {
+                        return self.editingMessageId() && self.editingMessageId() === id;
+                    });
+                };
+
                 self.test = async function() {
-                    // console.log(self.threads())
-                    console.log(self.messages())
+                    console.log(self.threads())
                 }
             }
             ko.applyBindings(new ViewModel());
@@ -267,6 +325,33 @@
                         if (response.status === 401 && data.message === 'token_expired') {
                             await refreshAccessToken();
                             data = await apiPostRequest(endpoint, body);
+                        } else {
+                            throw buildErrorObject(data.message, data.detail, response.status);
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async function apiPatchRequest(endpoint, body = {}) {
+                try {
+                    const accessToken = await fetchAccessToken();
+                    const response = await fetch(endpoint, {
+                        method: 'PATCH',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(body),
+                    });
+                    let data = await response.json();
+                    if (!response.ok) {
+                        if (response.status === 401 && data.message === 'token_expired') {
+                            await refreshAccessToken();
+                            data = await apiPatchRequest(endpoint, body);
                         } else {
                             throw buildErrorObject(data.message, data.detail, response.status);
                         }

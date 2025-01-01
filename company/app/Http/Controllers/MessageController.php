@@ -31,7 +31,7 @@ class MessageController extends Controller
                             ->orderBy('sent_at', 'desc')
                             ->orderBy('id', 'desc')
                             ->limit(1)
-                            ->select('message_thread_id', 'content');
+                            ->select('id', 'message_thread_id', 'content');
                     }])
                     ->get();
 
