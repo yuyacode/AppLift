@@ -18,6 +18,7 @@ class MessageController extends Controller
                         DB::table('common.messages')
                             ->select('message_thread_id', DB::raw('MAX(sent_at) as latest_sent_at'))
                             ->where('is_sent', 1)
+                            ->whereNull('deleted_at')
                             ->groupBy('message_thread_id'),
                         'latest_sent_at_infos',
                         'message_threads.id',
