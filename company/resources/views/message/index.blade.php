@@ -29,7 +29,7 @@
                                         <!-- ko if: $data.is_from_company === 1 -->
                                             <div data-bind="visible: $root.showMsgContent($data.id)" class="flex_custom justify-end mt-1">
                                                 <p data-bind="click: function() {$root.editingMessageId($data.id)}" class="fz12 text-gray-500 mr8 pointer">編集</p>
-                                                <p class="fz12 text-gray-500 pointer">削除</p>
+                                                <p data-bind="click: function() {$root.deleteMessage($data.id, $index())}" class="fz12 text-gray-500 pointer">削除</p>
                                             </div>
                                         <!-- /ko -->
                                         <div data-bind="visible: $root.showMsgEditForm($data.id)">
@@ -235,7 +235,7 @@
                         const data = {
                             content: content,
                         };
-                        const response = await apiPatchRequest(`${API_ENDPOINT}/${id}`, data);
+                        await apiPatchRequest(`${API_ENDPOINT}/${id}`, data);
                         self.messages()[index].content(content);
                         if (self.threads()[self.selectedThreadIndex()].messages[0].id === id) {
                             self.threads()[self.selectedThreadIndex()].messages[0].content(content);
@@ -245,6 +245,35 @@
                         showGeneralErrNotification()
                     }
                     self.editingMessageId(undefined);
+                }
+
+                self.deleteMessage = async function(id, index) {
+                    try {
+                        await apiDeleteRequest(`${API_ENDPOINT}/${id}`);
+                        self.messages.splice(index, 1);
+                        if (self.threads()[self.selectedThreadIndex()].messages[0].id === id) {
+                            let sentMessageExist = false;
+                            if (self.messages().length > 0) {
+                                for (let i = self.messages().length - 1; i >= 0; i--) {
+                                    if (self.messages()[i].is_sent === 1) {
+                                        sentMessageExist = true;
+                                        self.threads()[self.selectedThreadIndex()].last_activity_at(self.messages()[i].sent_at);
+                                        self.threads()[self.selectedThreadIndex()].messages[0].id = self.messages()[i].id;
+                                        self.threads()[self.selectedThreadIndex()].messages[0].content(self.messages()[i].content());
+                                        break;
+                                    }
+                                }
+                            }
+                            if (self.messages().length === 0 || !sentMessageExist) {
+                                self.threads()[self.selectedThreadIndex()].last_activity_at(self.threads()[self.selectedThreadIndex()].created_at);
+                                self.threads()[self.selectedThreadIndex()].messages[0].id = null;
+                                self.threads()[self.selectedThreadIndex()].messages[0].content('');
+                            }
+                        }
+                    } catch (error) {
+                        console.error(formatErrorInfo(error))
+                        showGeneralErrNotification()
+                    }
                 }
 
                 self.observeMessageContent = function(data) {
@@ -352,6 +381,31 @@
                         if (response.status === 401 && data.message === 'token_expired') {
                             await refreshAccessToken();
                             data = await apiPatchRequest(endpoint, body);
+                        } else {
+                            throw buildErrorObject(data.message, data.detail, response.status);
+                        }
+                    }
+                    return data;
+                } catch (error) {
+                    throw error;
+                }
+            }
+
+            async function apiDeleteRequest(endpoint) {
+                try {
+                    const accessToken = await fetchAccessToken();
+                    const response = await fetch(endpoint, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Accept': 'application/json',
+                        },
+                    });
+                    let data = await response.json();
+                    if (!response.ok) {
+                        if (response.status === 401 && data.message === 'token_expired') {
+                            await refreshAccessToken();
+                            data = await apiDeleteRequest(endpoint);
                         } else {
                             throw buildErrorObject(data.message, data.detail, response.status);
                         }
