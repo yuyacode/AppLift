@@ -15,7 +15,7 @@
                                 <p data-bind="text: '学生' + $data.student_user_id" class="fz14"></p>
                                 <p data-bind="text: $root.datetimeFormat($data.last_activity_at())" class="fz12 text-gray-500"></p>
                             </div>
-                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content()) : ''" class="fz14 pr24 text-gray-500"></p>
+                            <p data-bind="text: $data.messages[0].content() !== '' ? $root.truncateMessage($data.messages[0].content()) : ''" class="fz14 text-gray-500"></p>
                         </li>
                     </ul>
                 </div>
@@ -132,7 +132,7 @@
                 }
 
                 self.truncateMessage = function(message) {
-                    return message && message.length >= 17 ? message.substring(0, 16) + '...' : message;
+                    return message && message.length >= 19 ? message.substring(0, 18) + '...' : message;
                 };
 
                 self.getMessages = async function(id, index) {
