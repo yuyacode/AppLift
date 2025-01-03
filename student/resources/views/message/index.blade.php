@@ -10,12 +10,22 @@
             <div class="flex_custom">
                 <div class="w25per h500 y-scroll br-gray">
                     <ul data-bind="foreach: threads">
-                        <li class="pt16 pb16 pr8 pl8 pointer" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}, click: function() {$root.getMessages($data.id, $index());}">
+                        <li class="pt16 pb16 pr8 pl8" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}">
                             <div class="flex_custom space-between_custom mb8">
-                                <p data-bind="text: '企業ユーザー' + $data.company_user_id" class="fz14"></p>
+                                <p class="fz14 underline"><a href="#" data-bind="text: $data.company_name"></a></p>
+                            </div>
+                            <div class="flex_custom space-between_custom mb8">
+                                <p class="fz14 underline"><a href="#" data-bind="text: $data.company_user_name"></a></p>
                                 <p data-bind="text: $root.datetimeFormat($data.last_activity_at())" class="fz12 text-gray-500"></p>
                             </div>
-                            <p data-bind="text: $data.messages.length > 0 ? $root.truncateMessage($data.messages[0].content()) : ''" class="fz14 pr24 text-gray-500"></p>
+                            <div data-bind="click: function() {$root.getMessages($data.id, $index());}" class="fz14 text-gray-500 pointer">
+                                <!-- ko if: $data.messages[0].content() !== '' -->
+                                    <p data-bind="text: $root.truncateMessage($data.messages[0].content())"></p>
+                                <!-- /ko -->
+                                <!-- ko if: $data.messages[0].content() === '' -->
+                                    <p>&nbsp;</p>
+                                <!-- /ko -->
+                            </div>
                         </li>
                     </ul>
                 </div>
@@ -132,7 +142,7 @@
                 }
 
                 self.truncateMessage = function(message) {
-                    return message && message.length >= 17 ? message.substring(0, 16) + '...' : message;
+                    return message && message.length >= 19 ? message.substring(0, 18) + '...' : message;
                 };
 
                 self.getMessages = async function(id, index) {

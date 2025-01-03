@@ -158,6 +158,10 @@
     cursor: pointer;
 }
 
+.underline {
+    text-decoration: underline;
+}
+
 .button {
     position: relative;
     display: flex;

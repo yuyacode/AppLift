@@ -25,7 +25,14 @@ class MessageController extends Controller
                         '=',
                         'latest_sent_at_infos.message_thread_id'
                     )
-                    ->select('message_threads.*', DB::raw('COALESCE(latest_sent_at_infos.latest_sent_at, message_threads.created_at) as last_activity_at'))
+                    ->leftJoin('company.users', 'message_threads.company_user_id', '=', 'company.users.id')
+                    ->leftJoin('common.company_infos', 'company.users.company_info_id', '=', 'common.company_infos.id')
+                    ->select(
+                        'message_threads.*',
+                        DB::raw('COALESCE(latest_sent_at_infos.latest_sent_at, message_threads.created_at) as last_activity_at'),
+                        'company.users.name as company_user_name',
+                        'common.company_infos.name as company_name',
+                    )
                     ->orderByDesc('last_activity_at')
                     ->with(['messages' => function ($query) {
                         $query->where('is_sent', 1)
