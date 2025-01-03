@@ -1,9 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex_custom space-around_custom">
-            <p class="text-sm"><a href="{{ route('message.index') }}">メッセージ</a></p>
-            <p class="text-sm"><a href="{{ route('review.edit') }}">レビュー</a></p>
-        </div>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            レビュー
+        </h2>
     </x-slot>
 
     <form method="post" action="{{ route('review.update', $review) }}">

@@ -11,7 +11,7 @@ Route::prefix('company')->group(function () {
     Route::middleware('auth')->group(function () {
 
         Route::get('/dashboard', function () {
-            return view('dashboard');
+            return redirect(route('message.index', absolute: false));
         })->name('dashboard');
 
         Route::prefix('profile')

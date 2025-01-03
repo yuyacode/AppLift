@@ -1,10 +1,4 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex_custom space-around_custom">
-            <p class="text-sm"><a href="{{ route('message.index') }}">メッセージ</a></p>
-            <p class="text-sm"><a href="{{ route('review.edit') }}">レビュー</a></p>
-        </div>
-    </x-slot>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
             <div class="flex_custom">

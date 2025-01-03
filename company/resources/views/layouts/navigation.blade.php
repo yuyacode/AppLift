@@ -31,6 +31,10 @@
                             {{ __('Profile') }}
                         </x-dropdown-link>
 
+                        <x-dropdown-link :href="route('review.edit')">
+                            レビュー
+                        </x-dropdown-link>
+
                         @can('only-master')
                             <x-dropdown-link :href="route('company_info.index')">
                                 企業情報
