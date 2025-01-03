@@ -83,7 +83,6 @@
                     <!-- /ko -->
                 </div>
             </div>
-            <p data-bind="click: $root.test">test</p>
         </div>
     </div>
     <script>
@@ -298,15 +297,9 @@
                         return self.editingMessageId() && self.editingMessageId() === id;
                     });
                 };
-
-                self.test = async function() {
-                    console.log(self.threads())
-                }
             }
             ko.applyBindings(new ViewModel());
 
-            // const users = await apiGetRequest('https://api.example.com/users', { search: 'John', page: 2 });
-            // // 実際のリクエストURL: https://api.example.com/users?search=John&page=2
             async function apiGetRequest(endpoint, params = {}) {
                 try {
                     const accessToken = await fetchAccessToken();
@@ -334,9 +327,6 @@
                 }
             }
 
-            // const newUser = await apiPostRequest('https://api.example.com/users', { name: 'John', age: 30 });
-            // 実際のリクエストURL: https://api.example.com/users
-            // リクエストボディ: { "name": "John", "age": 30 }
             async function apiPostRequest(endpoint, body = {}) {
                 try {
                     const accessToken = await fetchAccessToken();
