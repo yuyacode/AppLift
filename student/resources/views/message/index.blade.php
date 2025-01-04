@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex_custom space-around_custom">
             <p class="text-sm"><a href="{{ route('message.index') }}">メッセージ</a></p>
-            <p class="text-sm"><a href="#">企業情報</a></p>
+            <p class="text-sm"><a href="{{ route('company_info.index') }}">企業情報</a></p>
         </div>
     </x-slot>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">

@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(MessageThread::class, 'student_user_id', 'id');
     }
 
+    public function companyInfoViewLogs()
+    {
+        return $this->hasMany(CompanyInfoViewLog::class);
+    }
+
     public function uniqueIds()
     {
         return ['account_id'];
