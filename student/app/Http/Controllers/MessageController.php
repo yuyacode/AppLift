@@ -32,6 +32,7 @@ class MessageController extends Controller
                         DB::raw('COALESCE(latest_sent_at_infos.latest_sent_at, message_threads.created_at) as last_activity_at'),
                         'company.users.name as company_user_name',
                         'common.company_infos.name as company_name',
+                        'common.company_infos.id as company_info_id',
                     )
                     ->orderByDesc('last_activity_at')
                     ->with(['messages' => function ($query) {

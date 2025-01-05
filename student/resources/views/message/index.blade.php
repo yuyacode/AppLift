@@ -12,10 +12,10 @@
                     <ul data-bind="foreach: threads">
                         <li class="pt16 pb16 pr8 pl8" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}">
                             <div class="flex_custom space-between_custom mb8">
-                                <p class="fz14 underline"><a href="#" data-bind="text: $data.company_name"></a></p>
+                                <p class="fz14 underline"><a data-bind="attr: {href: '/student/company_info/' + $data.company_info_id}, text: $data.company_name"></a></p>
                             </div>
                             <div class="flex_custom space-between_custom mb8">
-                                <p class="fz14 underline"><a href="#" data-bind="text: $data.company_user_name"></a></p>
+                                <p class="fz14 underline"><a data-bind="attr: {href: '/student/company_info/' + $data.company_info_id + '/' + $data.company_user_id}, text: $data.company_user_name"></a></p>
                                 <p data-bind="text: $root.datetimeFormat($data.last_activity_at())" class="fz12 text-gray-500"></p>
                             </div>
                             <div data-bind="click: function() {$root.getMessages($data.id, $index());}" class="fz14 text-gray-500 pointer">
