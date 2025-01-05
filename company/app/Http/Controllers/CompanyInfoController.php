@@ -31,8 +31,8 @@ class CompanyInfoController extends Controller
         Gate::authorize('update', $company_info);
 
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'address' => ['required', 'string', 'max:255'],
+            'name'     => ['required', 'string', 'max:255'],
+            'address'  => ['required', 'string', 'max:255'],
             'homepage' => ['required', 'string'],
         ]);
 

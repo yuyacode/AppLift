@@ -25,10 +25,10 @@ class ReviewController extends Controller
     public function update(Request $request, Review $reviews)
     {
         $request->validate([
-            'title' => ['required', 'string', 'max:255'],
-            'status' => ['required', 'in:1,0'],
-            'answers' => ['array'],
-            'answers.*.score' => ['nullable', 'integer', 'min:0', 'max:100'],
+            'title'            => ['required', 'string', 'max:255'],
+            'status'           => ['required', 'in:1,0'],
+            'answers'          => ['array'],
+            'answers.*.score'  => ['nullable', 'integer', 'min:0', 'max:100'],
             'answers.*.answer' => ['nullable', 'string'],
         ]);        
         
