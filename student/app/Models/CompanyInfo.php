@@ -16,6 +16,11 @@ class CompanyInfo extends Model
         return $query->where('name', 'like', '%' .$keyword .'%');
     }
 
+    public function companyUsers()
+    {
+        return $this->hasMany(CompanyUser::class);
+    }
+
     public function companyInfoViewLogs()
     {
         return $this->hasMany(CompanyInfoViewLog::class);

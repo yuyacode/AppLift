@@ -21,7 +21,7 @@
                 <!-- ko if: !$root.isShowingSearchResults() -->
                     <div>
                         @foreach ($recent_viewed_companies as $company)
-                            <div class="max-w-xl mt24">
+                            <div class="mt24">
                                 <p class="mt-1"><a href="{{ route('company_info.show', $company->id) }}">{{ $company->name }}</a></p>
                                 <p class="block font-medium text-sm text-gray-700 mt8">所在地：{{ $company->address }}</p>
                                 <p class="block font-medium text-sm text-gray-700 mt8">ホームページ：{{ $company->homepage }}</p>
@@ -31,7 +31,7 @@
                 <!-- /ko -->
                 <!-- ko if: $root.isShowingSearchResults() -->
                     <div data-bind="foreach: searchResults">
-                        <div class="max-w-xl mt24">
+                        <div class="mt24">
                             <p class="mt-1"><a data-bind="attr: {href: '/student/company_info/' + $data.id}, text: $data.name"></a></p>
                             <p data-bind="text: '住所：' + ($data.address || '')" class="block font-medium text-sm text-gray-700 mt8"></p>
                             <p data-bind="text: 'ホームページ：' + ($data.homepage || '')" class="block font-medium text-sm text-gray-700 mt8"></p>

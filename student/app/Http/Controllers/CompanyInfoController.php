@@ -20,10 +20,13 @@ class CompanyInfoController extends Controller
         return view('company_info.index', compact('recent_viewed_companies'));
     }
 
-    // public function show(Request $request): View
-    public function show(Request $request)
+    public function show(Request $request, CompanyInfo $company_info): View
     {
-        // 
+        $members = $company_info->companyUsers()
+                    ->with('review')
+                    ->get();
+
+        return view('company_info.show', compact('company_info', 'members'));
     }
 
     public function search(Request $request)
