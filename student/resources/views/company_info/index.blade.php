@@ -12,20 +12,22 @@
                     <h2 data-bind="text: $root.isShowingSearchResults() ? '検索結果' : '最近閲覧した企業'" class="text-lg font-medium text-gray-900"></h2>
                     <div>
                         <div class="flex_custom">
-                            <p><input type="text" data-bind="value: searchKeyword" class="fz14 w250 h40 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mr8"></p>
+                            <p><input type="text" data-bind="value: searchKeyword" class="fz14 w250 h40 border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm block mr8" placeholder="企業名で検索"></p>
                             <div data-bind="click: $root.searchCompany" class="fz14 w100 h40 p8 pointer button">検索</div>
                         </div>
                         <p data-bind="visible: $root.isShowingSearchResults(), click: $root.clearSearchResults" class="font-medium text-sm text-gray-700 mt8 pointer">× 検索結果をクリア</p>
                     </div>
                 </div>
                 <!-- ko if: !$root.isShowingSearchResults() -->
-                    @foreach ($recent_viewed_companies as $company)
-                        <div class="max-w-xl">
-                            <p class="mt-1"><a href="{{ route('company_info.show', $company->id) }}">{{ $company->name }}</a></p>
-                            <p class="block font-medium text-sm text-gray-700 mt8">所在地：{{ $company->address }}</p>
-                            <p class="block font-medium text-sm text-gray-700 mt8">ホームページ：{{ $company->homepage }}</p>
-                        </div>
-                    @endforeach
+                    <div>
+                        @foreach ($recent_viewed_companies as $company)
+                            <div class="max-w-xl mt24">
+                                <p class="mt-1"><a href="{{ route('company_info.show', $company->id) }}">{{ $company->name }}</a></p>
+                                <p class="block font-medium text-sm text-gray-700 mt8">所在地：{{ $company->address }}</p>
+                                <p class="block font-medium text-sm text-gray-700 mt8">ホームページ：{{ $company->homepage }}</p>
+                            </div>
+                        @endforeach
+                    </div>
                 <!-- /ko -->
                 <!-- ko if: $root.isShowingSearchResults() -->
                     <div data-bind="foreach: searchResults">

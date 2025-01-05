@@ -33,15 +33,21 @@
                 <table>
                     <thead>
                         <tr>
-                            <th class="font-medium text-sm text-gray-700 pr24">名前</th>
-                            <th class="font-medium text-sm text-gray-700">メールアドレス</th>
+                            <th class="font-medium text-sm text-gray-700 pr32">名前</th>
+                            <th class="font-medium text-sm text-gray-700 pr32">メールアドレス</th>
+                            <th class="font-medium text-sm text-gray-700 pr32">部署、部門</th>
+                            <th class="font-medium text-sm text-gray-700 pr32">職種、職業</th>
+                            <th class="font-medium text-sm text-gray-700">役職、ポジション</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($members as $member)
                             <tr>
-                                <td class="pr24">{{ $member->name }}</td>
-                                <td>{{ $member->email }}</td>
+                                <td class="pt8 pr32">{{ $member->name }}</td>
+                                <td class="pt8 pr32">{{ $member->email }}</td>
+                                <td class="pt8 pr32">{{ $member->department }}</td>
+                                <td class="pt8 pr32">{{ $member->occupation }}</td>
+                                <td class="pt8">{{ $member->position }}</td>
                             </tr>
                         @endforeach
                     </tbody>
