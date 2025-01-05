@@ -11,6 +11,11 @@ class CompanyInfoViewLog extends Model
 
     protected $connection = 'mysql';
 
+    protected $fillable = [
+        'user_id',
+        'company_info_id',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
