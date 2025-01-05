@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompanyInfoController;
 use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +15,14 @@ Route::middleware('auth')->group(function () {
                     Route::post('/refresh', [MessageController::class, 'refresh_access_token'])->name('refresh');
                 }
             );
+        }
+    );
+
+    Route::prefix('company_info')
+        ->name('company_info.')
+        ->controller(CompanyInfoController::class)
+        ->group(function () {
+            Route::get('/search', 'search')->name('search');
         }
     );
 });

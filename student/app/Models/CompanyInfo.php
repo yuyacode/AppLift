@@ -11,6 +11,11 @@ class CompanyInfo extends Model
 
     protected $connection = 'common';
 
+    public function scopeSearchByName($query, $keyword)
+    {
+        return $query->where('name', 'like', '%' .$keyword .'%');
+    }
+
     public function companyInfoViewLogs()
     {
         return $this->hasMany(CompanyInfoViewLog::class);

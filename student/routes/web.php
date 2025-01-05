@@ -27,8 +27,15 @@ Route::prefix('student')->group(function () {
             ->controller(CompanyInfoController::class)
             ->group(function () {
                 Route::get('/', 'index')->name('index');
-                Route::get('/{company_info}', 'show')->name('show');
-                // Route::get('/{company_info}/{company_user}', 'member')->name('member');
+                Route::get('/{company_info}', 'show')
+                    ->where('company_info', '[0-9]+')
+                    ->name('show');
+                Route::get('/{company_info}/{company_user}', 'member')
+                    ->where([
+                        'company_info', '[0-9]+',
+                        'company_user', '[0-9]+',
+                    ])
+                    ->name('member');
             }
         );
 

@@ -16,14 +16,11 @@
         <link rel="stylesheet" href="{{ asset('student/build/'.$appCssPath) }}">
         <link rel="stylesheet" href="{{ asset('student/build/assets/custom.css') }}">
         <script src="{{ asset('student/build/'.$appJsPath) }}" defer></script>
-        @if (Request::is('student/message*'))
-            <!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js" defer></script> -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.min.js" defer></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" defer></script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" defer></script>
-            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
-            <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
-        @endif
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.1/knockout-latest.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout.mapping/2.4.1/knockout.mapping.min.js" defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/dayjs/1.11.13/dayjs.min.js" defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
     </head>
     <body class="font-sans antialiased">
         <div class="min-h-screen bg-gray-100">
