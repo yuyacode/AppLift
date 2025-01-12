@@ -59,12 +59,11 @@ class RegisteredUserController extends Controller
         $default_review_item_ids = ReviewItem::where('is_default', 1)->pluck('id');
 
         $review_answers = array();
-        $now = now();
         foreach ($default_review_item_ids as $id) :
             array_push($review_answers, [
                 'review_id' => $review->id,
                 'review_item_id' => $id,
-                'created_at' => $now
+                'created_at' => now()
             ]);
         endforeach;
 
@@ -101,7 +100,7 @@ class RegisteredUserController extends Controller
                 }
                 return redirect()->back()->withErrors(['登録中にエラーが発生しました。もう一度お試しください。']);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             Log::error($e->getMessage());
             Log::error($e->getTraceAsString());
             return redirect()->back()->withErrors(['登録中にエラーが発生しました。もう一度お試しください。']);
