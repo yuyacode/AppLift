@@ -9,7 +9,7 @@ Route::prefix('student')->group(function () {
     Route::middleware('auth')->group(function () {
 
         Route::get('/dashboard', function () {
-            return redirect(route('message.index', absolute: false));
+            return view('dashboard');
         })->name('dashboard');
 
         Route::prefix('profile')

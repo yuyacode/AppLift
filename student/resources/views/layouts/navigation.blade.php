@@ -8,6 +8,12 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         AppLift
                     </x-nav-link>
+                    <x-nav-link :href="route('message.index')" :active="request()->routeIs('message.index')" style="margin-left: 96px;">
+                        メッセージ
+                    </x-nav-link>
+                    <x-nav-link :href="route('company_info.index')" :active="request()->routeIs('company_info.index')">
+                        企業情報
+                    </x-nav-link>
                 </div>
             </div>
 

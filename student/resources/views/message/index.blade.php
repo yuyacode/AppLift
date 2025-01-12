@@ -1,14 +1,8 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex_custom space-around_custom">
-            <p class="text-sm"><a href="{{ route('message.index') }}">メッセージ</a></p>
-            <p class="text-sm"><a href="{{ route('company_info.index') }}">企業情報</a></p>
-        </div>
-    </x-slot>
     <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6 py-12">
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
             <div class="flex_custom">
-                <div class="w25per h530 y-scroll br-gray">
+                <div class="w25per h590 y-scroll br-gray">
                     <ul data-bind="foreach: threads">
                         <li class="pt16 pb16 pr8 pl8" data-bind="css: {'bt-gray': $index() !== 0, 'bg-gray': $root.selectedThreadId() && $data.id === $root.selectedThreadId()}">
                             <div class="flex_custom space-between_custom mb8">
@@ -32,7 +26,7 @@
                 <div class="w75per ml24">
                     <!-- ko if: $root.selectedThreadId() -->
                         <!-- ko if: $root.messages().length > 0 -->
-                            <div data-bind="foreach: messages" class="h450 y-scroll" id="messages">
+                            <div data-bind="foreach: messages" class="h510 y-scroll" id="messages">
                                 <div class="mb16 flex_custom direction-column" data-bind="css: {'align-start': $data.is_from_company === 1, 'align-end': $data.is_from_student === 1}">
                                     <div class="max-w70per pt8 pb8 pr12 pl12 mb4 bg-gray radius8">
                                         <p data-bind="visible: $root.showMsgContent($data.id), text: $data.content()" class="fz14"></p>
@@ -55,7 +49,7 @@
                             </div>
                         <!-- /ko -->
                         <!-- ko if: $root.messages().length === 0 -->
-                            <div class="h450">
+                            <div class="h510">
                                 <p class="fz14">メッセージがありません</p>
                             </div>
                         <!-- /ko -->
