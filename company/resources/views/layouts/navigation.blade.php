@@ -8,6 +8,17 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         AppLift
                     </x-nav-link>
+                    <x-nav-link :href="route('message.index')" :active="request()->routeIs('message.index')" style="margin-left: 96px;">
+                        メッセージ
+                    </x-nav-link>
+                    <x-nav-link :href="route('review.edit')" :active="request()->routeIs('review.edit')">
+                        レビュー
+                    </x-nav-link>
+                    @can('only-master')
+                        <x-nav-link :href="route('company_info.index')" :active="request()->routeIs('company_info.index')">
+                            企業情報
+                        </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -30,16 +41,6 @@
                         <x-dropdown-link :href="route('profile.edit')">
                             {{ __('Profile') }}
                         </x-dropdown-link>
-
-                        <x-dropdown-link :href="route('review.edit')">
-                            レビュー
-                        </x-dropdown-link>
-
-                        @can('only-master')
-                            <x-dropdown-link :href="route('company_info.index')">
-                                企業情報
-                            </x-dropdown-link>
-                        @endcan
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
