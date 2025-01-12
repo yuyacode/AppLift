@@ -15,7 +15,7 @@
                         レビュー
                     </x-nav-link>
                     @can('only-master')
-                        <x-nav-link :href="route('company_info.index')" :active="request()->routeIs('company_info.index')">
+                        <x-nav-link :href="route('company_info.index')" :active="request()->routeIs(['company_info.index', 'company_info.basic_info.edit', 'company_info.member.create'])">
                             企業情報
                         </x-nav-link>
                     @endcan
