@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CompanyInfo;
 use App\Models\CompanyUser;
 use App\Models\Review;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -84,7 +85,7 @@ class CompanyInfoController extends Controller
         return view('company_info.member', compact('company_info', 'company_user', 'review'));
     }
 
-    public function search(Request $request)
+    public function search(Request $request): JsonResponse
     {
         $keyword = $request->query('keyword');
         

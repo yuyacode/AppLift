@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompanyInfo;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
@@ -26,7 +27,7 @@ class CompanyInfoController extends Controller
         return view('company_info.edit', compact('company_info', 'data'));
     }
 
-    public function update(Request $request, CompanyInfo $company_info)
+    public function update(Request $request, CompanyInfo $company_info): RedirectResponse
     {
         Gate::authorize('update', $company_info);
 

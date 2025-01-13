@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
@@ -39,7 +40,7 @@ class MessageController extends Controller
         return view('message.index', compact('threads'));
     }
 
-    public function get_access_token(Request $request)
+    public function get_access_token(Request $request): JsonResponse
     {
         $access_token = $request->user()->messageApiCredential()->select('access_token')->first()->access_token;
 
@@ -57,7 +58,7 @@ class MessageController extends Controller
         ]);
     }
 
-    public function refresh_access_token(Request $request)
+    public function refresh_access_token(Request $request): JsonResponse
     {
         $credential = $request->user()->messageApiCredential()->select('refresh_token', 'client_id', 'client_secret')->first();
         $refresh_token = $credential->refresh_token;

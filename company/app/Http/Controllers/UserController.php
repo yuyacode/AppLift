@@ -6,6 +6,7 @@ use App\Models\Review;
 use App\Models\ReviewAnswer;
 use App\Models\ReviewItem;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
@@ -21,7 +22,7 @@ class UserController extends Controller
         return view('user.create', compact('data'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $request->validate([
             'name'     => ['required', 'string', 'max:255'],

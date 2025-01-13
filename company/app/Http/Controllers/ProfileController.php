@@ -39,7 +39,7 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('status', 'account_info-updated');
     }
 
-    public function update_profile_info(Request $request, User $user)
+    public function update_profile_info(Request $request, User $user): RedirectResponse
     {
         Gate::authorize('update', $user);
 

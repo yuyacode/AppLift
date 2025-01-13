@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\ReviewAnswer;
 use Exception;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -22,7 +23,7 @@ class ReviewController extends Controller
         return view('review.edit', compact('review', 'data'));
     }
 
-    public function update(Request $request, Review $reviews)
+    public function update(Request $request, Review $reviews): RedirectResponse
     {
         $request->validate([
             'title'            => ['required', 'string', 'max:255'],
