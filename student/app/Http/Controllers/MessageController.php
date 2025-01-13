@@ -2,16 +2,29 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\MessageThread;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class MessageController extends Controller
 {
     public function index(Request $request): View
     {
+        try {
+            $request->validate([
+                'initial_thread_id' => 'nullable|integer',
+            ]);
+            $initial_thread_id = $request->query('initial_thread_id');
+        } catch (ValidationException $e) {
+            $initial_thread_id = null;
+        }
+
         $threads = $request->user()
                     ->messageThreads()
                     ->leftJoinSub(
@@ -44,10 +57,35 @@ class MessageController extends Controller
                     }])
                     ->get();
 
-        return view('message.index', compact('threads'));
+        $initial_thread_index = null;
+        if (!empty($initial_thread_id)) {
+            $initial_thread_index = $threads->search(function ($thread) use ($initial_thread_id) {
+                return $thread->id == $initial_thread_id;
+            });
+            $initial_thread_index = $initial_thread_index === false ? null : $initial_thread_index;
+        }
+
+        return view('message.index', [
+            'threads' => $threads,
+            'initial_thread_id' => $initial_thread_id,
+            'initial_thread_index' => $initial_thread_index,
+        ]);
     }
 
-    public function get_access_token(Request $request)
+    public function thread_store(Request $request): RedirectResponse
+    {
+        $initial_thread = MessageThread::firstOrCreate([
+            'company_user_id' => $request->company_user_id,
+            'student_user_id' => $request->user()->id,
+        ]);        
+        $initial_thread_id = $initial_thread->id;
+
+        return redirect()->route('message.index', [
+            'initial_thread_id' => $initial_thread_id,
+        ]);
+    }
+
+    public function get_access_token(Request $request): JsonResponse
     {
         $access_token = $request->user()->messageApiCredential()->select('access_token')->first()->access_token;
 
@@ -65,7 +103,7 @@ class MessageController extends Controller
         ]);
     }
 
-    public function refresh_access_token(Request $request)
+    public function refresh_access_token(Request $request): JsonResponse
     {
         $credential = $request->user()->messageApiCredential()->select('refresh_token', 'client_id', 'client_secret')->first();
         $refresh_token = $credential->refresh_token;

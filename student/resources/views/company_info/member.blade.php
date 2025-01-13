@@ -4,7 +4,13 @@
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg space-y-6">
                 <div class="flex_custom space-between_custom">
                     <p>{{ $company_user['name'] }}</p>
-                    <p class="fz14 w100 h40 p8 pointer button">話しかける</p>
+                    <div>
+                        <form id="add_thread_form" method="POST" action="{{ route('message.thread.store') }}">
+                            @csrf
+                            <input type="hidden" name="company_user_id" value="{{ $company_user['id'] }}">
+                            <button type="submit" id="add_thread_submit_btn" class="fz14 w100 h40 p8 pointer button">話しかける</button>
+                        </form>
+                    </div>
                 </div>
                 <div>
                     <p class="block font-medium text-sm text-gray-700 mb4">在籍企業</p>
@@ -47,4 +53,11 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('add_thread_form').addEventListener('submit', function (event) {
+                document.getElementById('add_thread_submit_btn').disabled = true;
+            });
+        });
+    </script>
 </x-app-layout>

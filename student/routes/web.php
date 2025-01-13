@@ -43,6 +43,7 @@ Route::prefix('student')->group(function () {
             ->name('message.')
             ->group(function () {
                 Route::get('/', [MessageController::class, 'index'])->name('index');
+                Route::post('/thread/add', [MessageController::class, 'thread_store'])->name('thread.store');
             }
         );
     });

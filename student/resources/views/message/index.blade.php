@@ -301,8 +301,16 @@
                         return self.editingMessageId() && self.editingMessageId() === id;
                     });
                 };
+
+                self.init = function() {
+                    @if(isset($initial_thread_id) && isset($initial_thread_index))
+                        self.getMessages({{ $initial_thread_id }}, {{ $initial_thread_index }});
+                    @endif
+                };
             }
-            ko.applyBindings(new ViewModel());
+            const vm = new ViewModel();
+            ko.applyBindings(vm);
+            vm.init();
 
             async function apiGetRequest(endpoint, params = {}) {
                 try {
