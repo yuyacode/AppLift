@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\CompanyInfo;
+use App\Models\CompanyUser;
+use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -48,6 +50,38 @@ class CompanyInfoController extends Controller
                     ->get();
 
         return view('company_info.show', compact('company_info', 'members'));
+    }
+
+    public function member(Request $request, CompanyInfo $company_info, CompanyUser $company_user): View
+    {
+        $review = Review::with([
+            'reviewAnswers' => function ($query) {
+                $query->select('review_id', 'review_item_id', 'score', 'answer');
+            },
+            'reviewAnswers.reviewItem' => function ($query) {
+                $query->select('id', 'name');
+            }
+        ])
+        ->where('company_user_id', $company_user->id)
+        ->select('id', 'title', 'status')
+        ->first();
+
+        $company_info = $company_info->only([
+                            'id',
+                            'name',
+                        ]);
+
+        $company_user = $company_user->only([
+                            'id',
+                            'name',
+                            'department',
+                            'occupation',
+                            'position',
+                            'join_date',
+                            'introduction'
+                        ]);
+                    
+        return view('company_info.member', compact('company_info', 'company_user', 'review'));
     }
 
     public function search(Request $request)

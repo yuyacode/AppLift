@@ -12,4 +12,9 @@ class Review extends Model
     {
         return $this->belongsTo(CompanyUser::class, 'company_user_id', 'id');
     }
+
+    public function reviewAnswers()
+    {
+        return $this->hasMany(ReviewAnswer::class);
+    }
 }
