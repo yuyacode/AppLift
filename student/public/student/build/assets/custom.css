@@ -14,8 +14,8 @@
     width: 25%;
 }
 
-.w32per {
-    width: 32%;
+.w22per {
+    width: 22%;
 }
 
 .w75per {
@@ -182,8 +182,8 @@
     align-items: flex-end;
 }
 
-.gap2per {
-    gap: 2%;
+.gap4per {
+    gap: 4%;
 }
 
 .border-box {
