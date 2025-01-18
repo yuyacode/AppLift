@@ -200,6 +200,7 @@
                                 if (new Date(self.messages()[i].sent_at) <= new Date(data.sent_at)) {
                                     self.messages.splice(i + 1, 0, data);
                                     sorted = true;
+                                    break;
                                 }
                             }
                             if (!sorted) {
