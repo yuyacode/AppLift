@@ -20,25 +20,6 @@ services:
       - ./company/nginx/nginx.conf:/etc/nginx/nginx.conf
     # ports:
       # - "5173:5173" # Viteの開発サーバー用
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: company
-      DB_USERNAME: user1
-      DB_PASSWORD: password1
-      DB2_CONNECTION: mysql
-      DB2_HOST: db
-      DB2_PORT: 3306
-      DB2_DATABASE: student
-      DB2_USERNAME: user2
-      DB2_PASSWORD: password2
-      DB3_CONNECTION: mysql
-      DB3_HOST: db
-      DB3_PORT: 3306
-      DB3_DATABASE: common
-      DB3_USERNAME: user3
-      DB3_PASSWORD: password3
     networks:
       - applift_network
     depends_on:
@@ -54,25 +35,6 @@ services:
       - ./student/nginx/nginx.conf:/etc/nginx/nginx.conf
     # ports:
     #   - "5174:5174" # Viteの開発サーバー用
-    environment:
-      DB_CONNECTION: mysql
-      DB_HOST: db
-      DB_PORT: 3306
-      DB_DATABASE: student
-      DB_USERNAME: user2
-      DB_PASSWORD: password2
-      DB1_CONNECTION: mysql
-      DB1_HOST: db
-      DB1_PORT: 3306
-      DB1_DATABASE: company
-      DB1_USERNAME: user1
-      DB1_PASSWORD: password1
-      DB3_CONNECTION: mysql
-      DB3_HOST: db
-      DB3_PORT: 3306
-      DB3_DATABASE: common
-      DB3_USERNAME: user3
-      DB3_PASSWORD: password3
     networks:
       - applift_network
     depends_on:
