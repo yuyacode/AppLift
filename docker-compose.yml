@@ -43,6 +43,7 @@ services:
       - applift_network
     depends_on:
       - db
+      - mailhog
 
   app-student:
     build:
@@ -76,6 +77,7 @@ services:
       - applift_network
     depends_on:
       - db
+      - mailhog
 
   db:
     image: mysql:8.0
@@ -86,6 +88,14 @@ services:
       - ./mysql:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"  # DBクライアント接続用
+    networks:
+      - applift_network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "8025:8025"
     networks:
       - applift_network
 
