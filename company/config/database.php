@@ -65,8 +65,8 @@ return [
         'student' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => env('DB2_HOST', '127.0.0.1'),
-            'port' => env('DB2_PORT', '3306'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
             'database' => env('DB2_DATABASE', 'forge'),
             'username' => env('DB2_USERNAME', 'forge'),
             'password' => env('DB2_PASSWORD', ''),
@@ -85,8 +85,8 @@ return [
         'common' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => env('DB3_HOST', '127.0.0.1'),
-            'port' => env('DB3_PORT', '3306'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
             'database' => env('DB3_DATABASE', 'forge'),
             'username' => env('DB3_USERNAME', 'forge'),
             'password' => env('DB3_PASSWORD', ''),
