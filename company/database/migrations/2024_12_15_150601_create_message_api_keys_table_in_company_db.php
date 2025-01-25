@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('is_master')
-                  ->default(0)
-                  ->unsigned()
-                  ->after('remember_token');
+        Schema::connection('company')->create('message_api_keys', function (Blueprint $table) {
+            $table->id();
+            $table->string('api_key')->unique()->notNullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -24,8 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('is_master');
-        });
+        Schema::connection('company')->dropIfExists('message_api_keys');
     }
 };

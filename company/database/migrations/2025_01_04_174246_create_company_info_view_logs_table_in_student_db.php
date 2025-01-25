@@ -11,16 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_api_credentials', function (Blueprint $table) {
+        Schema::connection('student')->create('company_info_view_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('client_id')->unique();
-            $table->string('client_secret')->unique();
-            $table->string('access_token')->unique()->nullable();
-            $table->string('refresh_token')->unique()->nullable();
-            $table->timestamp('expires_at')->nullable();
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users');
+            $table->unsignedBigInteger('company_info_id');
+            $table->foreign('company_info_id')
+                ->references('id')
+                ->on('common.company_infos');
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -29,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_api_credentials');
+        Schema::connection('student')->dropIfExists('company_info_view_logs');
     }
 };

@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->uuid('account_id')->after('id');
+        Schema::connection('student')->table('message_api_credentials', function (Blueprint $table) {
+            $table->foreign('user_id')
+                  ->references('id')
+                  ->on('users');
         });
     }
 
@@ -21,8 +23,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('account_id');
+        Schema::connection('student')->table('message_api_credentials', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
         });
     }
 };

@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_api_keys', function (Blueprint $table) {
-            $table->id();
-            $table->string('api_key')->unique()->notNullable();
-            $table->timestamps();
-            $table->softDeletes();
+        Schema::connection('student')->table('users', function (Blueprint $table) {
+            $table->uuid('account_id')->after('id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_api_keys');
+        Schema::connection('student')->table('users', function (Blueprint $table) {
+            $table->dropColumn('account_id');
+        });
     }
 };

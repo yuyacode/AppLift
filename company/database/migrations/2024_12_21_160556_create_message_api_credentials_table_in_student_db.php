@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('message_api_credentials', function (Blueprint $table) {
+        Schema::connection('student')->create('message_api_credentials', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->string('client_id')->unique();
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('message_api_credentials');
+        Schema::connection('student')->dropIfExists('message_api_credentials');
     }
 };
