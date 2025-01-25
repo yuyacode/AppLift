@@ -10,7 +10,7 @@ class MessageApiCredential extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $connection = 'mysql';
+    protected $connection = 'company';
 
     public function user()
     {
