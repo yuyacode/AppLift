@@ -14,13 +14,7 @@ return new class extends Migration
         Schema::connection('student')->create('company_info_view_logs', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users');
             $table->unsignedBigInteger('company_info_id');
-            $table->foreign('company_info_id')
-                ->references('id')
-                ->on('common.company_infos');
             $table->timestamps();
         });
     }
