@@ -65,8 +65,8 @@ return [
         'company' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => env('DB1_HOST', '127.0.0.1'),
-            'port' => env('DB1_PORT', '3306'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
             'database' => env('DB1_DATABASE', 'forge'),
             'username' => env('DB1_USERNAME', 'forge'),
             'password' => env('DB1_PASSWORD', ''),
@@ -85,8 +85,8 @@ return [
         'common' => [
             'driver' => 'mysql',
             'url' => env('DB_URL'),
-            'host' => env('DB3_HOST', '127.0.0.1'),
-            'port' => env('DB3_PORT', '3306'),
+            'host' => env('DB_HOST', '127.0.0.1'),
+            'port' => env('DB_PORT', '3306'),
             'database' => env('DB3_DATABASE', 'forge'),
             'username' => env('DB3_USERNAME', 'forge'),
             'password' => env('DB3_PASSWORD', ''),
