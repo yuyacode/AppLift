@@ -9,7 +9,7 @@ class CompanyInfoViewLog extends Model
 {
     use HasFactory;
 
-    protected $connection = 'mysql';
+    protected $connection = 'student';
 
     protected $fillable = [
         'user_id',

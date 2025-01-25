@@ -13,7 +13,7 @@ class User extends Authenticatable
 {
     use HasFactory, Notifiable, SoftDeletes, HasUuids;
 
-    protected $connection = 'mysql';
+    protected $connection = 'student';
 
     /**
      * The attributes that are mass assignable.
