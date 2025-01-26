@@ -43,7 +43,7 @@ return [
         ],
 
         'student' => [
-            'driver' => 'mysql',
+            'driver' => env('DB_DRIVER'),
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
@@ -63,7 +63,7 @@ return [
         ],
 
         'company' => [
-            'driver' => 'mysql',
+            'driver' => env('DB_DRIVER'),
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
@@ -83,7 +83,7 @@ return [
         ],
 
         'common' => [
-            'driver' => 'mysql',
+            'driver' => env('DB_DRIVER'),
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
