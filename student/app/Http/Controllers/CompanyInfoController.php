@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
+use App\Models\CompanyInfoViewLog;
+use App\Models\MessageThread;
+
 class CompanyInfoController extends Controller
 {
     public function index(Request $request): View
@@ -98,5 +101,18 @@ class CompanyInfoController extends Controller
         $company_infos = CompanyInfo::searchByName($keyword)->get();
 
         return response()->json($company_infos);
+    }
+
+    public function test_insert()
+    {
+        CompanyInfoViewLog::create([
+            'user_id'         => 1,
+            'company_info_id' => 1,
+        ]);
+
+        MessageThread::create([
+            'company_user_id' => 1,
+            'student_user_id' => 1,
+        ]);
     }
 }
