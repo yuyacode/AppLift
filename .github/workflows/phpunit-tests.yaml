@@ -32,7 +32,7 @@ jobs:
         run: |
           cd company
           cp .env.testing.example .env.testing
-          php artisan key:generate
+          php artisan key:generate --env=testing
           touch database/{company.sqlite,student.sqlite,common.sqlite}
 
       - name: Run tests
@@ -67,7 +67,7 @@ jobs:
         run: |
           cd student
           cp .env.testing.example .env.testing
-          php artisan key:generate
+          php artisan key:generate --env=testing
           touch database/{company.sqlite,student.sqlite,common.sqlite}
 
       - name: Run tests
