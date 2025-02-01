@@ -8,9 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
-use App\Models\MessageApiCredential;
-use App\Models\MessageThread;
-
 class CompanyInfoController extends Controller
 {
     public function index(Request $request): View
@@ -43,22 +40,5 @@ class CompanyInfoController extends Controller
         $company_info->update($data);
 
         return to_route('company_info.index')->with('status_company-basic-info', '基本情報を変更しました');
-    }
-
-    public function test_insert()
-    {
-        MessageApiCredential::create([
-            'user_id'       => 1,
-            'client_id'     => "hoge",
-            'client_secret' => "hoge",
-            'access_token'  => "hoge",
-            'refresh_token' => "hoge",
-            'expires_at'    => "2025-01-26 14:26:18",
-        ]);
-
-        MessageThread::create([
-            'company_user_id' => 1,
-            'student_user_id' => 1,
-        ]);
     }
 }

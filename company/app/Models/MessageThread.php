@@ -13,11 +13,6 @@ class MessageThread extends Model
 
     protected $connection = 'common';
 
-    protected $fillable = [
-        'company_user_id',
-        'student_user_id',
-    ];
-
     public function user()
     {
         return $this->belongsTo(User::class, 'company_user_id', 'id');
