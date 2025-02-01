@@ -29,7 +29,7 @@ class CompanyInfoControllerTest extends TestCase
         $controller->test_insert();
 
         $this->assertDatabaseHas('message_api_credentials', [
-            'user_id'       => 1,
+            'user_id'       => 2,
             'client_id'     => "hoge",
             'client_secret' => "hoge",
             'access_token'  => "hoge",
@@ -38,7 +38,7 @@ class CompanyInfoControllerTest extends TestCase
         ], 'company');
 
         $this->assertDatabaseHas('message_threads', [
-            'company_user_id' => 1,
+            'company_user_id' => 2,
             'student_user_id' => 1,
         ], 'common');
     }
@@ -63,7 +63,7 @@ class CompanyInfoControllerTest extends TestCase
         $controller->test_insert();
 
         $this->assertDatabaseHas('message_api_credentials', [
-            'user_id'       => 1,
+            'user_id'       => 2,
             'client_id'     => "hoge",
             'client_secret' => "hoge",
             'access_token'  => "hoge",
@@ -72,7 +72,7 @@ class CompanyInfoControllerTest extends TestCase
         ], 'company');
 
         $this->assertDatabaseHas('message_threads', [
-            'company_user_id' => 1,
+            'company_user_id' => 2,
             'student_user_id' => 1,
         ], 'common');
     }
