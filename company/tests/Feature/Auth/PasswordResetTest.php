@@ -19,70 +19,70 @@ class PasswordResetTest extends TestCase
         $response->assertStatus(200);
     }
 
-    // public function test_reset_password_link_can_be_requested(): void
-    // {
-    //     $this->markTestSkipped(
-    //         'Skipping this test because it currently hangs indefinitely.' .
-    //         'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
-    //     );
+    public function test_reset_password_link_can_be_requested(): void
+    {
+        $this->markTestSkipped(
+            'Skipping this test because it currently hangs indefinitely.' .
+            'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
+        );
 
-    //     Notification::fake();
+        Notification::fake();
 
-    //     $user = User::factory()->create();
+        $user = User::factory()->create();
 
-    //     $this->post('/company/forgot-password', ['email' => $user->email]);
+        $this->post('/company/forgot-password', ['email' => $user->email]);
 
-    //     Notification::assertSentTo($user, ResetPassword::class);
-    // }
+        Notification::assertSentTo($user, ResetPassword::class);
+    }
 
-    // public function test_reset_password_screen_can_be_rendered(): void
-    // {
-    //     $this->markTestSkipped(
-    //         'Skipping this test because it currently hangs indefinitely.' .
-    //         'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
-    //     );
+    public function test_reset_password_screen_can_be_rendered(): void
+    {
+        $this->markTestSkipped(
+            'Skipping this test because it currently hangs indefinitely.' .
+            'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
+        );
 
-    //     Notification::fake();
+        Notification::fake();
 
-    //     $user = User::factory()->create();
+        $user = User::factory()->create();
 
-    //     $this->post('/company/forgot-password', ['email' => $user->email]);
+        $this->post('/company/forgot-password', ['email' => $user->email]);
 
-    //     Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
-    //         $response = $this->get('/company/reset-password/'.$notification->token);
+        Notification::assertSentTo($user, ResetPassword::class, function ($notification) {
+            $response = $this->get('/company/reset-password/'.$notification->token);
 
-    //         $response->assertStatus(200);
+            $response->assertStatus(200);
 
-    //         return true;
-    //     });
-    // }
+            return true;
+        });
+    }
 
-    // public function test_password_can_be_reset_with_valid_token(): void
-    // {
-    //     $this->markTestSkipped(
-    //         'Skipping this test because it currently hangs indefinitely.' .
-    //         'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
-    //     );
+    public function test_password_can_be_reset_with_valid_token(): void
+    {
+        $this->markTestSkipped(
+            'Skipping this test because it currently hangs indefinitely.' .
+            'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
+        );
 
-    //     Notification::fake();
+        Notification::fake();
 
-    //     $user = User::factory()->create();
+        $user = User::factory()->create();
 
-    //     $this->post('/company/forgot-password', ['email' => $user->email]);
+        $this->post('/company/forgot-password', ['email' => $user->email]);
 
-    //     Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
-    //         $response = $this->post('/company/reset-password', [
-    //             'token' => $notification->token,
-    //             'email' => $user->email,
-    //             'password' => 'password',
-    //             'password_confirmation' => 'password',
-    //         ]);
+        Notification::assertSentTo($user, ResetPassword::class, function ($notification) use ($user) {
+            $response = $this->post('/company/reset-password', [
+                'token' => $notification->token,
+                'email' => $user->email,
+                'password' => 'password',
+                'password_confirmation' => 'password',
+            ]);
 
-    //         $response
-    //             ->assertSessionHasNoErrors()
-    //             ->assertRedirect(route('login'));
+            $response
+                ->assertSessionHasNoErrors()
+                ->assertRedirect(route('login'));
 
-    //         return true;
-    //     });
-    // }
+            return true;
+        });
+    }
 }
