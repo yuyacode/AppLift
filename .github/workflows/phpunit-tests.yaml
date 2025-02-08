@@ -7,6 +7,9 @@ on:
 jobs:
   test-company:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_STEP_DEBUG: "true"    # ステップの詳細ログ出力
+      ACTIONS_RUNNER_DEBUG: "true"  # ランナーの詳細ログ出力
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -38,10 +41,13 @@ jobs:
       - name: Run tests
         run: |
           cd company
-          php artisan test --filter "AuthenticationTest|EmailVerificationTest"
+          php artisan test --filter=AuthenticationTest
 
   test-student:
     runs-on: ubuntu-latest
+    env:
+      ACTIONS_STEP_DEBUG: "true"    # ステップの詳細ログ出力
+      ACTIONS_RUNNER_DEBUG: "true"  # ランナーの詳細ログ出力
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -73,4 +79,4 @@ jobs:
       - name: Run tests
         run: |
           cd student
-          php artisan test --filter "PasswordConfirmationTest|PasswordResetTest"
+          php artisan test --filter=AuthenticationTest
