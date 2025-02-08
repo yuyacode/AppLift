@@ -7,9 +7,6 @@ on:
 jobs:
   test-company:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_STEP_DEBUG: "true"    # ステップの詳細ログ出力
-      ACTIONS_RUNNER_DEBUG: "true"  # ランナーの詳細ログ出力
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -45,9 +42,6 @@ jobs:
 
   test-student:
     runs-on: ubuntu-latest
-    env:
-      ACTIONS_STEP_DEBUG: "true"    # ステップの詳細ログ出力
-      ACTIONS_RUNNER_DEBUG: "true"  # ランナーの詳細ログ出力
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
