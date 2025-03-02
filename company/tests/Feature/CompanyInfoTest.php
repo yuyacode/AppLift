@@ -3,7 +3,11 @@
 namespace Tests\Feature;
 
 use App\Models\CompanyInfo;
+use App\Models\Review;
+use App\Models\ReviewItem;
 use App\Models\User;
+use Database\Seeders\ReviewItemSeeder;
+use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 use Tests\Traits\RefreshMultipleDatabases;
 
@@ -236,5 +240,85 @@ class CompanyInfoTest extends TestCase
         $response->assertViewIs('user.create');
 
         $response->assertViewHas('data', $oldInput);
+    }
+
+    public function test_validation_fails_when_required_fields_are_missing()
+    {
+        $masterUser = User::factory()->master_account()->create();
+        
+        $response = $this
+            ->actingAs($masterUser)
+            ->from(route('company_info.member.create'))
+            ->post(route('company_info.member.store'), []);
+
+        $response->assertStatus(302);
+        $response->assertRedirect(route('company_info.member.create'));
+        $response->assertSessionHasErrors(['name', 'email', 'password']);
+    }
+
+    public function test_storing_member_with_valid_data_and_api_successfully_returns_ok()
+    {
+        $this->seed(ReviewItemSeeder::class);
+
+        $defaultReviewItems = ReviewItem::all();
+
+        $fakeUrl = config('api.message_api_base_url_backend').'/register';
+
+        Http::fake([
+            $fakeUrl => Http::response([
+                'message' => 'OAuth registration was successful',
+                'detail'  => '',
+            ], 200),
+        ]);
+
+        $companyInfo = CompanyInfo::factory()->create();
+
+        $masterUser = User::factory()->master_account()->create([
+            'company_info_id' => $companyInfo->id
+        ]);
+
+        $formData = [
+            'name'     => 'Test User',
+            'email'    => 'testuser@example.com',
+            'password' => 'Password',
+        ];
+
+        $response = $this
+            ->actingAs($masterUser)
+            ->post(route('company_info.member.store'), $formData);
+
+        $response->assertRedirect(route('company_info.index'));
+        $response->assertSessionHas('status_company-member', 'メンバーを追加しました');
+
+        $this->assertDatabaseHas('users', [
+            'company_info_id' => $companyInfo->id,
+            'name'            => 'Test User',
+            'email'           => 'testuser@example.com',
+            'is_master'       => 0,
+        ], 'company');
+
+        $createdUser = User::where('email', 'testuser@example.com')->first();
+
+        $this->assertDatabaseHas('reviews', [
+            'company_user_id' => $createdUser->id,
+            'status'          => 0,
+        ], 'common');
+
+        $createdReview = Review::where('company_user_id', $createdUser->id)->first();
+
+        $this->assertDatabaseCount('review_answers', $defaultReviewItems->count(), 'common');
+
+        foreach ($defaultReviewItems as $item) {
+            $this->assertDatabaseHas('review_answers', [
+                'review_id'      => $createdReview->id,
+                'review_item_id' => $item->id,
+            ], 'common');
+        }
+
+        Http::assertSent(function ($request) use ($fakeUrl, $createdUser) {
+            return $request->url() === $fakeUrl
+                && $request['user_id'] === $createdUser->id
+                && $request['app_kind'] === 'company';
+        });
     }
 }
