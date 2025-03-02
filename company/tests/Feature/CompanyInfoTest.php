@@ -118,4 +118,90 @@ class CompanyInfoTest extends TestCase
                 && $viewData['homepage'] === $oldInput['homepage'];
         });
     }
+
+    public function test_master_user_cannot_update_other_company_info()
+    {
+        $companyInfo = CompanyInfo::factory()->create();
+
+        $user = User::factory()->master_account()->create([
+            'company_info_id' => 999,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('company_info.basic_info.update', $companyInfo->id), [
+                'name'     => 'Test Corp',
+                'address'  => '123 Test St.',
+                'homepage' => 'https://example.com',
+            ]
+        );
+
+        $response->assertStatus(403);
+    }
+
+    public function test_master_user_can_update_own_company_info()
+    {
+        $companyInfo = CompanyInfo::factory()->create([
+            'name'     => 'Old Name',
+            'address'  => 'Old Address',
+            'homepage' => 'https://old.example.com'
+        ]);
+
+        $user = User::factory()->master_account()->create([
+            'company_info_id' => 1,
+        ]);
+
+        $postData = [
+            'name'     => 'New Name',
+            'address'  => 'New Address',
+            'homepage' => 'https://new.example.com',
+        ];
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('company_info.basic_info.update', $companyInfo->id), $postData);
+
+        $response->assertRedirect(route('company_info.index'));
+
+        $response->assertSessionHas('status_company-basic-info', '基本情報を変更しました');
+
+        $this->assertDatabaseHas('company_infos', [
+            'id'       => $companyInfo->id,
+            'name'     => $postData['name'],
+            'address'  => $postData['address'],
+            'homepage' => $postData['homepage'],
+        ], 'common');
+    }
+
+    public function test_update_fails_when_validation_fails()
+    {
+        $companyInfo = CompanyInfo::factory()->create();
+
+        $user = User::factory()
+            ->master_account()
+            ->create([
+                'company_info_id' => $companyInfo->id,
+        ]);
+
+        $invalidData = [
+            'name'     => '',
+            'address'  => '',
+            'homepage' => '',
+        ];
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('company_info.basic_info.update', $companyInfo->id), $invalidData);
+
+        $response->assertStatus(302);
+
+        $response->assertSessionHasErrors(['name', 'address', 'homepage']);
+
+        $this->assertDatabaseHas('company_infos', [
+            'id'       => $companyInfo->id,
+            'name'     => $companyInfo->name,
+            'address'  => $companyInfo->address,
+            'homepage' => $companyInfo->homepage,
+        ], 'common');
+    }
 }
