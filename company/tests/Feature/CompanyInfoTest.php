@@ -204,4 +204,37 @@ class CompanyInfoTest extends TestCase
             'homepage' => $companyInfo->homepage,
         ], 'common');
     }
+
+    public function test_only_master_user_can_view_member_create_page()
+    {
+        $masterAccount = User::factory()->master_account()->create();
+        
+        $response = $this
+            ->actingAs($masterAccount)
+            ->get(route('company_info.member.create'));
+
+        $response->assertOk();
+
+        $response->assertViewIs('user.create');
+
+        $response->assertViewHas('data', []);
+    }
+
+    public function test_old_input_is_passed_to_data_when_exists()
+    {
+        $masterAccount = User::factory()->master_account()->create();
+
+        $oldInput = ['name' => 'Old Input Test'];
+
+        $response = $this
+            ->actingAs($masterAccount)
+            ->withSession(['_old_input' => $oldInput])
+            ->get(route('company_info.member.create'));
+
+        $response->assertOk();
+
+        $response->assertViewIs('user.create');
+
+        $response->assertViewHas('data', $oldInput);
+    }
 }
