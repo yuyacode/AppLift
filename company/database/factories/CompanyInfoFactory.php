@@ -18,7 +18,7 @@ class CompanyInfoFactory extends Factory
     {
         return [
             'name' => fake()->company(),
-            'address' => fake()->prefecture(). fake()->city(). fake()->ward(). fake()->randomNumber(1). '-'. fake()->randomNumber(1). '-'. fake()->randomNumber(1),
+            'address' => fake()->address(),
             'homepage' => fake()->url(),
         ];
     }

@@ -38,7 +38,7 @@ jobs:
       - name: Run tests
         run: |
           cd company
-          php artisan test --filter "AuthenticationTest|EmailVerificationTest|PasswordConfirmationTest|PasswordResetTest|PasswordUpdateTest|RegistrationTest|ProfileTest"
+          php artisan test --filter "AuthenticationTest|EmailVerificationTest|PasswordConfirmationTest|PasswordResetTest|PasswordUpdateTest|RegistrationTest|CompanyInfoTest|ProfileTest"
 
   test-student:
     runs-on: ubuntu-latest
