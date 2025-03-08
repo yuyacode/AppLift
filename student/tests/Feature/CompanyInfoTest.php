@@ -6,7 +6,10 @@ use App\Models\CompanyInfo;
 use App\Models\CompanyInfoViewLog;
 use App\Models\CompanyUser;
 use App\Models\Review;
+use App\Models\ReviewAnswer;
+use App\Models\ReviewItem;
 use App\Models\User;
+use Database\Seeders\ReviewItemSeeder;
 use Tests\TestCase;
 use Tests\Traits\RefreshMultipleDatabases;
 
@@ -130,5 +133,85 @@ class CompanyInfoTest extends TestCase
             'user_id'         => $user->id,
             'company_info_id' => $companyInfo->id,
         ], 'student');
+    }
+
+    public function test_member_displays_company_info_user_and_review()
+    {
+        $companyInfo = CompanyInfo::factory()->create([
+            'name' => 'Test Company',
+        ]);
+
+        $companyUser = CompanyUser::factory()->create([
+            'company_info_id' => $companyInfo->id,
+            'name'           => 'Taro Yamada',
+            'department'     => 'Sales',
+            'occupation'     => 'Engineer',
+            'position'       => 'Manager',
+            'join_date'      => '2020-01-01',
+            'introduction'   => 'Joined recently.',
+        ]);
+
+        $review = Review::factory()->create([
+            'company_user_id' => $companyUser->id,
+            'title'           => 'Review Title',
+            'status'          => 1,
+        ]);
+
+        $this->seed(ReviewItemSeeder::class);
+        $defaultReviewItems = ReviewItem::all();
+
+        foreach ($defaultReviewItems as $item) {
+            ReviewAnswer::factory()->create([
+                'review_id'      => $review->id,
+                'review_item_id' => $item->id,
+            ]);
+        }
+
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->get(route('company_info.member', [
+                'company_info' => $companyInfo->id,
+                'company_user' => $companyUser->id,
+            ]));
+
+        $response->assertOk()
+            ->assertViewIs('company_info.member')
+            ->assertViewHas('company_info')
+            ->assertViewHas('company_user')
+            ->assertViewHas('review');
+
+        $viewCompanyInfo = $response->viewData('company_info');
+        $this->assertEquals($companyInfo->id, $viewCompanyInfo['id']);
+        $this->assertEquals('Test Company', $viewCompanyInfo['name']);
+        $this->assertCount(2, $viewCompanyInfo);
+
+        $viewCompanyUser = $response->viewData('company_user');
+        $this->assertEquals($companyUser->id, $viewCompanyUser['id']);
+        $this->assertEquals('Taro Yamada', $viewCompanyUser['name']);
+        $this->assertEquals('Sales', $viewCompanyUser['department']);
+        $this->assertEquals('Engineer', $viewCompanyUser['occupation']);
+        $this->assertEquals('Manager', $viewCompanyUser['position']);
+        $this->assertEquals('2020-01-01', $viewCompanyUser['join_date']);
+        $this->assertEquals('Joined recently.', $viewCompanyUser['introduction']);
+        $this->assertCount(7, $viewCompanyUser);
+
+        $viewReview = $response->viewData('review');
+        $this->assertEquals($review->id, $viewReview->id);
+        $this->assertEquals('Review Title', $viewReview->title);
+        $this->assertEquals(1, $viewReview->status);
+
+        $this->assertTrue($viewReview->relationLoaded('reviewAnswers'));
+        $this->assertCount(count($defaultReviewItems), $viewReview->reviewAnswers);
+
+        $actualReviewItemNames = $viewReview->reviewAnswers->map(function ($answer) {
+            return $answer->reviewItem->name;
+        });
+        $expectedReviewItemNames = $defaultReviewItems->pluck('name');
+        $this->assertEquals(
+            $expectedReviewItemNames->sort()->values(),
+            $actualReviewItemNames->sort()->values()
+        );
     }
 }
