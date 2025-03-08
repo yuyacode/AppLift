@@ -214,4 +214,61 @@ class CompanyInfoTest extends TestCase
             $actualReviewItemNames->sort()->values()
         );
     }
+
+    public function test_search_returns_400_when_no_keyword_is_provided()
+    {
+        $user = User::factory()->create();
+
+        $response = $this
+            ->actingAs($user)
+            ->getJson(route('company_info.search'));
+
+        $response->assertStatus(400)
+            ->assertJson([
+                'message' => 'Keyword is required.',
+            ]);
+    }
+
+    public function test_search_returns_empty_array_when_no_matches()
+    {
+        $user = User::factory()->create();
+
+        CompanyInfo::factory()->create([
+            'name' => 'Laravel Inc',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->getJson(route('company_info.search', ['keyword' => 'test']));
+
+        $response->assertOk()
+            ->assertJsonCount(0);
+    }
+
+    public function test_search_returns_matching_companies()
+    {
+        $user = User::factory()->create();
+
+        CompanyInfo::factory()->create([
+            'name' => 'Test Company',
+        ]);
+        CompanyInfo::factory()->create([
+            'name' => 'Other Company',
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->getJson(route('company_info.search', ['keyword' => 'test']));
+
+        $response->assertOk();
+
+        $response->assertJsonStructure([
+            '*' => ['id', 'name', 'homepage'],
+        ]);
+
+        $response->assertJsonCount(1);
+
+        $responseData = $response->json();
+        $this->assertEquals('Test Company', $responseData[0]['name']);
+    }
 }
