@@ -22,7 +22,7 @@ class PasswordResetTest extends TestCase
     public function test_reset_password_link_can_be_requested(): void
     {
         $this->markTestSkipped(
-            'Skipping this test because it currently hangs indefinitely.' .
+            'Skipping this test because it currently hangs indefinitely. ' .
             'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
         );
 
@@ -38,7 +38,7 @@ class PasswordResetTest extends TestCase
     public function test_reset_password_screen_can_be_rendered(): void
     {
         $this->markTestSkipped(
-            'Skipping this test because it currently hangs indefinitely.' .
+            'Skipping this test because it currently hangs indefinitely. ' .
             'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
         );
 
@@ -60,7 +60,7 @@ class PasswordResetTest extends TestCase
     public function test_password_can_be_reset_with_valid_token(): void
     {
         $this->markTestSkipped(
-            'Skipping this test because it currently hangs indefinitely.' .
+            'Skipping this test because it currently hangs indefinitely. ' .
             'Our investigation was inconclusive, and we plan to revisit and fix it in the future.'
         );
 
