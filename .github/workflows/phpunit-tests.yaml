@@ -73,4 +73,4 @@ jobs:
       - name: Run tests
         run: |
           cd student
-          php artisan test --filter "AuthenticationTest|EmailVerificationTest|PasswordConfirmationTest|PasswordResetTest|PasswordUpdateTest|RegistrationTest|ProfileTest"
+          php artisan test
