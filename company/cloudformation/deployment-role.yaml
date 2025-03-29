@@ -73,7 +73,7 @@ Resources:
                   - "ecr:GetLifecyclePolicy"
                   - "ecr:ListImages"
                   - "ecr:BatchDeleteImage"
-                Resource: "arn:aws:ecr:ap-northeast-1:${AWSAccountID}:repository/app_lift_company"
+                Resource: !Sub "arn:aws:ecr:ap-northeast-1:${AWSAccountID}:repository/app_lift_company"
     Metadata:
       cfn_nag:
         rules_to_suppress:
