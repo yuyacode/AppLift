@@ -2,7 +2,7 @@ name: phpunit-tests
 
 on:
   pull_request:
-    branches: [main]
+    branches: [main_hoge]
 
 jobs:
   test-company:
