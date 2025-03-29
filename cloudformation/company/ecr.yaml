@@ -5,7 +5,7 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: app_lift_company
+      RepositoryName: app_lift/company
       EmptyOnDelete: true
       ImageScanningConfiguration:
         ScanOnPush: true
