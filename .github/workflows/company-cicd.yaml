@@ -63,7 +63,7 @@ jobs:
 
       - name: Run cfn-lint
         run: |
-          files="company/cloudformation/deployment-role.yaml"
+          files="cloudformation/company/deployment-role.yaml"
           for file in $files; do
             cfn-lint "$file" -f parseable
           done
@@ -84,7 +84,7 @@ jobs:
 
       - name: Run cfn-nag
         run: |
-          files="company/cloudformation/deployment-role.yaml"
+          files="cloudformation/company/deployment-role.yaml"
           for file in $files; do
             cfn_nag "$file"
           done
@@ -105,7 +105,7 @@ jobs:
   #     - name: Create Deployment Role
   #       run: |
   #         aws cloudformation deploy \
-  #           --template-file company/cloudformation/deployment-role.yaml \
+  #           --template-file cloudformation/company/deployment-role.yaml \
   #           --stack-name AppLiftCompany-Deployment-Role \
   #           --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
   #           --parameter-overrides GitHubOIDCProviderArn=${{ secrets.GH_OIDC_PROVIDER_ARN }} AWSAccountID=${{ secrets.AWS_ACCOUNT_ID }}
