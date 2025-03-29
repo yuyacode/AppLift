@@ -47,20 +47,13 @@ Resources:
                   - "cloudformation:GetTemplateSummary"
                   - "cloudformation:ListStackResources"
                 Resource: "*"
-        - PolicyName: "ECRRepositoryCreatePolicy"
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - "ecr:CreateRepository"
-                Resource: "*"
         - PolicyName: "ECRRepositoryManagementPolicy"
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
               - Effect: Allow
                 Action:
+                  - "ecr:CreateRepository"
                   - "ecr:DescribeRepositories"
                   - "ecr:DeleteRepository"
                   - "ecr:PutImageScanningConfiguration"
@@ -68,7 +61,7 @@ Resources:
                   - "ecr:GetLifecyclePolicy"
                   - "ecr:ListImages"
                   - "ecr:BatchDeleteImage"
-                Resource: !ImportValue AppLiftCompanyECRRepositoryArn
+                Resource: "*"
     Metadata:
       cfn_nag:
         rules_to_suppress:
