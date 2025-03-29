@@ -49,6 +49,6 @@ Outputs:
 
   ECRRepositoryUri:
     Description: URI of the ECR repository for AppLiftCompany.
-    Value: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepository.RepositoryName}"
+    Value: !GetAtt ECRRepository.RepositoryUri
     Export:
       Name: AppLiftCompanyECRRepositoryUri
