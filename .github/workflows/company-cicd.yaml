@@ -109,7 +109,7 @@ jobs:
   #           --template-file cloudformation/company/deployment-role.yaml \
   #           --stack-name Company-Deployment-Role \
   #           --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
-  #           --parameter-overrides GitHubOIDCProviderArn=${{ secrets.GH_OIDC_PROVIDER_ARN }} AWSAccountID=${{ secrets.AWS_ACCOUNT_ID }}
+  #           --parameter-overrides GitHubOIDCProviderArn=${{ secrets.GH_OIDC_PROVIDER_ARN }}
 
   # deploy-ecr:
   #   needs: [create-deployment-role]

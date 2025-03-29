@@ -6,11 +6,6 @@ Description: >
 Parameters:
   GitHubOIDCProviderArn:
     Type: String
-  AWSAccountID:
-    Type: String
-    Description: "The 12-digit AWS Account ID"
-    AllowedPattern: '^\d{12}$'
-    ConstraintDescription: "Must be a 12-digit AWS account ID."
 
 Resources:
   ECRDeploymentRole:
