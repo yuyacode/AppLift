@@ -30,6 +30,7 @@ Resources:
                 "description": "Keep only the last 10 tagged images",
                 "selection": {
                   "tagStatus": "tagged",
+                  "tagPatternList": ["*"],
                   "countType": "imageCountMoreThan",
                   "countNumber": 10
                 },
