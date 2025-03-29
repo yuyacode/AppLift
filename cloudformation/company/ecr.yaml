@@ -5,7 +5,6 @@ Resources:
   ECRRepository:
     Type: AWS::ECR::Repository
     Properties:
-      RepositoryName: app_lift/company
       EmptyOnDelete: true
       ImageScanningConfiguration:
         ScanOnPush: true
@@ -42,11 +41,11 @@ Resources:
           }
 
 Outputs:
-  ECRRepositoryName:
-    Description: Name of the ECR repository for AppLiftCompany.
-    Value: !Ref ECRRepository
+  ECRRepositoryArn:
+    Description: The ARN of the ECR repository for AppLiftCompany.
+    Value: !GetAtt ECRRepository.Arn
     Export:
-      Name: AppLiftCompanyECRRepositoryName
+      Name: AppLiftCompanyECRRepositoryArn
 
   ECRRepositoryUri:
     Description: URI of the ECR repository for AppLiftCompany.
