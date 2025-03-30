@@ -9,40 +9,40 @@ permissions:
   contents: read
 
 jobs:
-  # php-unit:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v4
+  php-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up PHP
-  #       uses: shivammathur/setup-php@v2
-  #       with:
-  #         php-version: '8.3'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
 
-  #     - name: Cache dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: company/vendor
-  #         key: ${{ runner.os }}-composer-${{ hashFiles('company/composer.lock') }}
-  #         restore-keys: ${{ runner.os }}-composer-
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: company/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('company/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-  #     - name: Install dependencies
-  #       run: |
-  #         cd company
-  #         composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Install dependencies
+        run: |
+          cd company
+          composer install --no-progress --prefer-dist --optimize-autoloader
 
-  #     - name: Setup .env.testing and DB
-  #       run: |
-  #         cd company
-  #         cp .env.testing.example .env.testing
-  #         php artisan key:generate --env=testing
-  #         touch database/{company.sqlite,student.sqlite,common.sqlite}
+      - name: Setup .env.testing and DB
+        run: |
+          cd company
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
+          touch database/{company.sqlite,student.sqlite,common.sqlite}
 
-  #     - name: Run tests
-  #       run: |
-  #         cd company
-  #         php artisan test
+      - name: Run tests
+        run: |
+          cd company
+          php artisan test
 
   cfn-lint:
     runs-on: ubuntu-latest
@@ -90,8 +90,7 @@ jobs:
           done
 
   create-deployment-role:
-    # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]  # 一時的にPHP Unitジョブは無効化しているため、needsから指定を外す
+    needs: [php-unit, cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
