@@ -73,8 +73,42 @@ Resources:
               Instead, the policy strictly limits allowed actions to the minimum set necessary for infrastructure provisioning.
           - id: W28
             reason: "Fixed role name is required so that GitHub Actions can reliably assume this IAM role using its ARN."
+  ECRImagePushRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ECRImagePushRole
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOIDCProviderArn
+            Action: 
+              - "sts:AssumeRoleWithWebIdentity"
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: 'sts.amazonaws.com'
+              StringLike:
+                "token.actions.githubusercontent.com:sub": "repo:yuyacode/AppLift:*"
+      Policies:
+        - PolicyName: "ECRLoginAndPushImagePolicy"
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - ecr:GetAuthorizationToken
+                  - ecr:BatchCheckLayerAvailability
+                  - ecr:CompleteLayerUpload
+                  - ecr:InitiateLayerUpload
+                  - ecr:PutImage
+                  - ecr:UploadLayerPart
+                Resource: "*"
 
 Outputs:
   ECRDeploymentRoleArn:
     Description: "ARN of the IAM Role for ECR Repository deployment"
     Value: !GetAtt ECRDeploymentRole.Arn
+  ECRImagePushRoleArn:
+    Description: "ARN of the IAM Role for Login and Push Image to ECR"
+    Value: !GetAtt ECRImagePushRole.Arn
