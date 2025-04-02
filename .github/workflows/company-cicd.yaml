@@ -156,7 +156,7 @@ jobs:
           IMAGE_URI_LATEST="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
           echo "Building image: $IMAGE_URI_WITH_TAG"
-          docker build -t $IMAGE_URI_WITH_TAG ../../company/dockerfile
+          docker build -t $IMAGE_URI_WITH_TAG -f company/dockerfile company
 
           echo "Tagging image as latest: $IMAGE_URI_LATEST"
           docker tag $IMAGE_URI_WITH_TAG $IMAGE_URI_LATEST
