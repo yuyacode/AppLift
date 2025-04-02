@@ -104,6 +104,17 @@ Resources:
                   - ecr:PutImage
                   - ecr:UploadLayerPart
                 Resource: "*"
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W11
+            reason: >
+              This IAM role is assumed by GitHub Actions for infrastructure deployment using CloudFormation templates.
+              The templates dynamically create and manage various AWS resources.
+              Due to the dynamic and flexible nature of the deployment process, it is not feasible to predefine specific resource ARNs.
+              Instead, the policy strictly limits allowed actions to the minimum set necessary for infrastructure provisioning.
+          - id: W28
+            reason: "Fixed role name is required so that GitHub Actions can reliably assume this IAM role using its ARN."
 
 Outputs:
   ECRDeploymentRoleArn:
