@@ -1,6 +1,0 @@
-AWSTemplateFormatVersion: "2010-09-09"
-Description: >
-  This CloudFormation template creates an IAM Role that allow GitHub Actions to assume the role and deploy AWS resources securely.
-  This single template can be expanded in the future to include multiple roles for various resource types.
-
-Resources: {}
