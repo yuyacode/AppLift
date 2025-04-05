@@ -83,8 +83,16 @@ jobs:
         run: gem install cfn-nag
 
       - name: Run cfn-nag
+        # run: |
+        #   files="cloudformation/company/deployment-role.yaml cloudformation/company/ecr.yaml"
+        #   for file in $files; do
+        #     cfn_nag "$file"
+        #   done
+
+        # リソース定義のないテンプレート（cloudformation/company/deployment-role.yaml）は、一時的にcfn-nagによる検証対象から外す
+        # 将来、リソース定義が追加された際には、再度cfn-nagによる検証対象に加える
         run: |
-          files="cloudformation/company/deployment-role.yaml cloudformation/company/ecr.yaml"
+          files="cloudformation/company/ecr.yaml"
           for file in $files; do
             cfn_nag "$file"
           done
