@@ -1,0 +1,58 @@
+# --- 一般的な除外 ---
+## Git関連
+.git
+.gitignore
+.gitattributes
+
+## OS/エディタ固有のファイル
+.DS_Store
+Thumbs.db
+*.swp
+*~
+.idea/
+.vscode/
+
+# --- 依存関係ディレクトリ ---
+## Composerの依存関係: Dockerfile内の composer install でインストールするため、vendorは不要
+vendor/
+
+## Node.jsの依存関係: Dockerfile内で npm install や npm run build を実行しないため、node_modulesは不要
+node_modules/
+
+# --- Laravel ランタイム/キャッシュファイル ---
+## storageディレクトリ内のファイル: ログ、セッション、フレームワークキャッシュなどはコンテナ実行時に生成される（あるいはボリュームで管理されるべきもの）
+storage/app/*
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/testing/*
+storage/framework/views/*
+storage/logs/*
+### ディレクトリ構造維持のため、.gitignoreは除外しない
+!storage/*/.gitignore
+
+## Bootstrapキャッシュ: Dockerfile内の php artisan ...:cache で生成するため不要
+bootstrap/cache/*.php
+### ディレクトリ構造維持のため、.gitignoreは除外しない
+!bootstrap/cache/.gitignore
+
+# --- 開発・テスト関連 ---
+## 環境設定ファイル
+.env
+.env.*
+
+## テスト関連ファイル
+tests/
+phpunit.xml
+phpunit.xml.dist
+
+# --- その他 ---
+*.log
+
+public/storage
+public/hot
+
+docker-compose.yml
+docker-compose.*.yml
+.dockerignore
+
+README.md
