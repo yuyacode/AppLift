@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Log group for AppLiftStudent (ECS/Fargate)."
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupClass: INFREQUENT_ACCESS
+      LogGroupName: /ecs/applift_student
+      RetentionInDays: 14
+      Tags:
+        - Key: Service
+          Value: AppLiftStudent
+
+Outputs:
+  LogGroupName:
+    Description: The Name of the Log group for AppLiftStudent (ECS/Fargate).
+    Value: !Ref LogGroup
+    Export:
+      Name: AppLiftStudentLogGroupName
