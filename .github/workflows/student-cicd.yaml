@@ -107,7 +107,7 @@ jobs:
         run: |
           aws cloudformation deploy \
             --template-file cloudformation/student/cloudwatch.yaml \
-            --stack-name Student-Log_Group
+            --stack-name Student-Log-Group
   
   deploy-ecr:
     needs: [deploy-log_group]

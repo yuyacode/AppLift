@@ -107,7 +107,7 @@ jobs:
         run: |
           aws cloudformation deploy \
             --template-file cloudformation/company/cloudwatch.yaml \
-            --stack-name Company-Log_Group
+            --stack-name Company-Log-Group
 
   deploy-ecr:
     needs: [deploy-log_group]
