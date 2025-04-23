@@ -12,7 +12,7 @@ Resources:
         - Key: Service
           Value: AppLiftCompany
     Metadata:
-      cfn-nag:
+      cfn_nag:
         rules_to_suppress:
           - id: W84
             reason: "Since the logs output non-sensitive data, security is ensured by encryption with the default encryption key managed by AWS, so the warning by W84 is suppressed."
