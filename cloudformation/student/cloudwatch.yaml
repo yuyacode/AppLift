@@ -1,0 +1,25 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: "Log group for AppLiftStudent (ECS/Fargate)."
+
+Resources:
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupClass: INFREQUENT_ACCESS
+      LogGroupName: /ecs/applift_student
+      RetentionInDays: 14
+      Tags:
+        - Key: Service
+          Value: AppLiftStudent
+    Metadata:
+      cfn_nag:
+        rules_to_suppress:
+          - id: W84
+            reason: "Since the logs output non-sensitive data, security is ensured by encryption with the default encryption key managed by AWS, so the warning by W84 is suppressed."
+
+Outputs:
+  LogGroupName:
+    Description: The Name of the Log group for AppLiftStudent (ECS/Fargate).
+    Value: !Ref LogGroup
+    Export:
+      Name: AppLiftStudentLogGroupName
