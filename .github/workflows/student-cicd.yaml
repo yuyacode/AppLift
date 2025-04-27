@@ -110,7 +110,8 @@ jobs:
             --stack-name Student-Log-Group
   
   deploy-ecr:
-    needs: [deploy-log_group]
+    # needs: [php-unit, cfn-lint, cfn-nag]
+    needs: [cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
