@@ -69,7 +69,7 @@ class RegisteredUserController extends Controller
 
         ReviewAnswer::insert($review_answers);
 
-        $url = config('api.message_api_base_url_backend').'/register';
+        $url = config('api.message_api_endpoint').'/register';
 
         $headers = [
             'Authorization' => 'Bearer '.config('api.message_api_key'),

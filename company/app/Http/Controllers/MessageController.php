@@ -42,7 +42,7 @@ class MessageController extends Controller
 
     private function buildDestUrl(string $path = ''): string
     {
-        $base = rtrim(config('api.message_api_base_url_backend'), '/');
+        $base = rtrim(config('api.message_api_endpoint'), '/');
         return $base . '/' . ltrim($path, '/');
     }
 
@@ -138,7 +138,7 @@ class MessageController extends Controller
             ], 500);
         }
 
-        $url = config('api.message_api_base_url_backend').'/token';
+        $url = config('api.message_api_endpoint').'/token';
 
         $headers = [
             'Accept'        => 'application/json',

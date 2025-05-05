@@ -19,7 +19,7 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
-        $fakeUrl = config('api.message_api_base_url_backend').'/register';
+        $fakeUrl = config('api.message_api_endpoint').'/register';
 
         Http::fake([
             $fakeUrl => Http::response([
