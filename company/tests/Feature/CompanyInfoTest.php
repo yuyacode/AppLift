@@ -262,7 +262,7 @@ class CompanyInfoTest extends TestCase
 
         $defaultReviewItems = ReviewItem::all();
 
-        $fakeUrl = config('api.message_api_base_url_backend').'/register';
+        $fakeUrl = config('api.message_api_endpoint').'/register';
 
         Http::fake([
             $fakeUrl => Http::response([
