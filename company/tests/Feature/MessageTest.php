@@ -72,7 +72,7 @@ class MessageTest extends TestCase
             'client_secret' => 'test_client_secret',
         ]);
 
-        $fakeUrl = config('api.message_api_base_url_backend').'/token';
+        $fakeUrl = config('api.message_api_endpoint').'/token';
 
         Http::fake([
             $fakeUrl => Http::response([
@@ -121,7 +121,7 @@ class MessageTest extends TestCase
             'client_secret' => 'test_client_secret',
         ]);
 
-        $fakeUrl = config('api.message_api_base_url_backend').'/token';
+        $fakeUrl = config('api.message_api_endpoint').'/token';
 
         Http::fake([
             $fakeUrl => Http::response([], 200),

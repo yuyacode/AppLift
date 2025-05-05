@@ -14,6 +14,18 @@ Route::middleware('auth')->group(function () {
                     Route::post('/refresh', [MessageController::class, 'refresh_access_token'])->name('refresh');
                 }
             );
+            Route::prefix('proxy')
+                ->name('proxy.')
+                ->group(function () {
+                    Route::get('{path?}', [MessageController::class, 'proxyGet'])
+                        ->where('path', '.*');
+                    Route::post('{path?}', [MessageController::class, 'proxyPost'])
+                        ->where('path', '.*');
+                    Route::patch('{path?}', [MessageController::class, 'proxyPatch'])
+                        ->where('path', '.*');
+                    Route::delete('{path?}', [MessageController::class, 'proxyDelete'])
+                        ->where('path', '.*');
+            });
         }
     );
 });

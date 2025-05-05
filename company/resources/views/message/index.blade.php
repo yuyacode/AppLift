@@ -80,7 +80,7 @@
         </div>
     </div>
     <script>
-        const API_ENDPOINT = "{{ config('api.message_api_base_url_frontend') }}";
+        const PROXY_ENDPOINT = "/company/message/proxy";
         const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
         const notyf = new Notyf({
             position: {
@@ -139,7 +139,7 @@
                         const requestData = {
                             thread_id: id,
                         };
-                        const response = await apiGetRequest(`${API_ENDPOINT}`, requestData);
+                        const response = await apiGetRequest(`${PROXY_ENDPOINT}`, requestData);
                         self.selectedThreadId(id);
                         self.selectedThreadIndex(index);
                         self.messages(self.observeMessageContent(response));
@@ -181,7 +181,7 @@
                                         ? self.datetimeFormat(self.reservedSendDate() + ' ' + self.reservedSendTime(), true)
                                         : self.datetimeFormat(new Date().toLocaleString(), true),
                         };
-                        const response = await apiPostRequest(`${API_ENDPOINT}`, data);
+                        const response = await apiPostRequest(`${PROXY_ENDPOINT}`, data);
                         self.newMessageContent('');
                         self.isReservedSend(false);
                         if (data.is_sent) {
@@ -229,7 +229,7 @@
                         const data = {
                             content: content,
                         };
-                        await apiPatchRequest(`${API_ENDPOINT}/${id}`, data);
+                        await apiPatchRequest(`${PROXY_ENDPOINT}/${id}`, data);
                         self.messages()[index].content(content);
                         if (self.threads()[self.selectedThreadIndex()].messages[0].id === id) {
                             self.threads()[self.selectedThreadIndex()].messages[0].content(content);
@@ -243,7 +243,7 @@
 
                 self.deleteMessage = async function(id, index) {
                     try {
-                        await apiDeleteRequest(`${API_ENDPOINT}/${id}`);
+                        await apiDeleteRequest(`${PROXY_ENDPOINT}/${id}`);
                         self.messages.splice(index, 1);
                         if (self.threads()[self.selectedThreadIndex()].messages[0].id === id) {
                             let sentMessageExist = false;
@@ -329,6 +329,7 @@
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
+                            'X-CSRF-TOKEN': csrfToken,
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                         },
@@ -356,6 +357,7 @@
                         method: 'PATCH',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
+                            'X-CSRF-TOKEN': csrfToken,
                             'Accept': 'application/json',
                             'Content-Type': 'application/json',
                         },
@@ -383,6 +385,7 @@
                         method: 'DELETE',
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
+                            'X-CSRF-TOKEN': csrfToken,
                             'Accept': 'application/json',
                         },
                     });

@@ -40,6 +40,63 @@ class MessageController extends Controller
         return view('message.index', compact('threads'));
     }
 
+    private function buildDestUrl(string $path = ''): string
+    {
+        $base = rtrim(config('api.message_api_endpoint'), '/');
+        return $base . '/' . ltrim($path, '/');
+    }
+
+    private function forwardHeaders(Request $req): array
+    {
+        return [
+            'Accept'        => 'application/json',
+            'Authorization' => $req->header('Authorization'),
+        ];
+    }
+
+    private function passthrough($resp)
+    {
+        return collect($resp->headers())->only(['Content-Type', 'Content-Disposition'])->all();
+    }
+
+    private function wrapResponse($resp)
+    {
+        return response($resp->body(), $resp->status())
+               ->withHeaders($this->passthrough($resp));
+    }
+
+    public function proxyGet(Request $req, string $path = '')
+    {
+        $resp = Http::withHeaders($this->forwardHeaders($req))
+                    ->get($this->buildDestUrl($path), $req->query());
+
+        return $this->wrapResponse($resp);
+    }
+
+    public function proxyPost(Request $req, string $path = '')
+    {
+        $resp = Http::withHeaders($this->forwardHeaders($req))
+                    ->post($this->buildDestUrl($path), $req->json()->all());
+
+        return $this->wrapResponse($resp);
+    }
+
+    public function proxyPatch(Request $req, string $path = '')
+    {
+        $resp = Http::withHeaders($this->forwardHeaders($req))
+                    ->patch($this->buildDestUrl($path), $req->json()->all());
+
+        return $this->wrapResponse($resp);
+    }
+
+    public function proxyDelete(Request $req, string $path = '')
+    {
+        $resp = Http::withHeaders($this->forwardHeaders($req))
+                    ->delete($this->buildDestUrl($path));
+
+        return $this->wrapResponse($resp);
+    }
+
     public function get_access_token(Request $request): JsonResponse
     {
         $access_token = $request->user()->messageApiCredential()->select('access_token')->first()->access_token;
@@ -81,7 +138,7 @@ class MessageController extends Controller
             ], 500);
         }
 
-        $url = config('api.message_api_base_url_backend').'/token';
+        $url = config('api.message_api_endpoint').'/token';
 
         $headers = [
             'Accept'        => 'application/json',
