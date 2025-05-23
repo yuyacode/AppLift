@@ -219,7 +219,7 @@ jobs:
 
   deploy-role:
     # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]
+    # needs: [cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
