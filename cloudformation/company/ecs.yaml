@@ -50,7 +50,11 @@ Resources:
             - ContainerPort: 8081
               Protocol: tcp
           HealthCheck:
-            Command: ["NONE"]
+            Command: ["CMD-SHELL", "exit 0"]
+            Interval: 30
+            Timeout: 5
+            Retries: 3
+            StartPeriod: 0
           LogConfiguration:
             LogDriver: awslogs
             Options:
