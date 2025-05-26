@@ -49,6 +49,8 @@ Resources:
           PortMappings:
             - ContainerPort: 8082
               Protocol: tcp
+          HealthCheck:
+            Command: ["NONE"]
           LogConfiguration:
             LogDriver: awslogs
             Options:
