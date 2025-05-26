@@ -1,0 +1,190 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Defines the ECS Task Definition and Service for the AppLiftCompany.
+
+Parameters:
+  AWSAccountID:
+    Type: String
+    AllowedPattern: '^\d{12}$'
+  ECRRepositoryName:
+    Type: String
+  ImageTag:
+    Type: String
+  NetworkStackName:
+    Type: String
+  SecretsManagerStackName:
+    Type: String
+  DBStackName:
+    Type: String
+  ExecutionRoleStackName:
+    Type: String
+  RoleStackName:
+    Type: String
+  ECSClusterStackName:
+    Type: String
+  ALBStackName:
+    Type: String
+  SGStackName:
+    Type: String
+
+Resources:
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: 256
+      Memory: 512
+      ExecutionRoleArn: !ImportValue
+        Fn::Sub: "${ExecutionRoleStackName}-Arn"
+      Family: "AppLiftCompany"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      RuntimePlatform:
+        CpuArchitecture: X86_64
+        OperatingSystemFamily: LINUX
+      TaskRoleArn: !ImportValue
+        Fn::Sub: "${RoleStackName}-ECSTaskRoleArn"
+      ContainerDefinitions:
+        - Name: app-company-container
+          Image: !Sub "${AWSAccountID}.dkr.ecr.${AWS::Region}.amazonaws.com/${ECRRepositoryName}:${ImageTag}"
+          PortMappings:
+            - ContainerPort: 8081
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !ImportValue AppLiftCompanyLogGroupName
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs/app_lift
+          Environment:
+            - Name: APP_NAME
+              Value: AppLiftCompany
+            - Name: APP_TIMEZONE
+              Value: Asia/Tokyo
+            # - Name: APP_URL    # update later
+            #   Value: https://hoge.com/company
+            - Name: APP_LOCALE
+              Value: ja
+            - Name: APP_FAKER_LOCALE
+              Value: ja_JP
+            - Name: LOG_CHANNEL
+              Value: stderr
+            - Name: LOG_LEVEL
+              Value: info
+            - Name: DB_CONNECTION
+              Value: mysql
+            - Name: DB_DRIVER
+              Value: mysql
+            - Name: DB_DATABASE
+              Value: company
+            - Name: DB2_DATABASE
+              Value: student
+            - Name: DB3_DATABASE
+              Value: common
+            - Name: SESSION_PATH
+              Value: /company
+            - Name: SESSION_COOKIE
+              Value: company_session
+            - Name: SESSION_SECURE_COOKIE
+              Value: true
+            - Name: SESSION_SAMESITE
+              Value: lax
+            # Set environment variables related to e-mail later
+          Secrets:
+            - Name: APP_KEY
+              ValueFrom: !ImportValue
+                Fn::Sub: "${SecretsManagerStackName}-AppKeyArn"
+            - Name: DB_HOST
+              ValueFrom: !Sub
+                - "${ImportedArn}:host::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB_USERNAME
+              ValueFrom: !Sub
+                - "${ImportedArn}:username::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB_PASSWORD
+              ValueFrom: !Sub
+                - "${ImportedArn}:password::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB2_USERNAME
+              ValueFrom: !Sub
+                - "${ImportedArn}:username::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB2_PASSWORD
+              ValueFrom: !Sub
+                - "${ImportedArn}:password::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB3_USERNAME
+              ValueFrom: !Sub
+                - "${ImportedArn}:username::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB3_PASSWORD
+              ValueFrom: !Sub
+                - "${ImportedArn}:password::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: MESSAGE_API_KEY
+              ValueFrom: !ImportValue
+                Fn::Sub: "${SecretsManagerStackName}-MessageApiKeyArn"
+            - Name: MESSAGE_API_ENDPOINT
+              ValueFrom: !ImportValue
+                Fn::Sub: "${SecretsManagerStackName}-MessageApiEndpointArn"
+  ECSService:
+    Type: AWS::ECS::Service
+    Properties:
+      Cluster: !ImportValue
+        Fn::Sub: "${ECSClusterStackName}-Arn"
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 100
+        MaximumPercent: 200
+      DesiredCount: 1
+      EnableECSManagedTags: true
+      EnableExecuteCommand: true
+      HealthCheckGracePeriodSeconds: 120
+      LaunchType: FARGATE
+      LoadBalancers:
+        - ContainerName: app-company-container
+          ContainerPort: 8081
+          TargetGroupArn: !ImportValue
+            Fn::Sub: "${ALBStackName}-CompanyTargetGroupArn"
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets:
+            - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnet1aId"
+            - Fn::ImportValue: !Sub "${NetworkStackName}-PrivateSubnet1cId"
+          SecurityGroups:
+            - Fn::ImportValue: !Sub "${SGStackName}-CompanyAppSGId"
+          AssignPublicIp: DISABLED
+      PropagateTags: SERVICE
+      SchedulingStrategy: REPLICA
+      TaskDefinition: !Ref ECSTaskDefinition
+
+Outputs:
+  ECSServiceName:
+    Description: The name of the ECS Service.
+    Value: !Ref ECSService
+  ECSServiceArn:
+    Description: The ARN of the ECS Service.
+    Value: !GetAtt ECSService.ServiceArn
+  ECSTaskDefinitionArn:
+    Description: The ARN of the ECS Task Definition.
+    Value: !Ref ECSTaskDefinition
