@@ -153,48 +153,47 @@ jobs:
     needs: [deploy-ecr]
     runs-on: ubuntu-latest
     outputs:
-      # image_tag: ${{ steps.build_and_push_image.outputs.image_tag }}
-      image_tag: d97bbd09fdb4586f4c0570d078e91cf13e4cf5b0
+      image_tag: ${{ steps.build_and_push_image.outputs.image_tag }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # - name: Configure AWS credentials
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     role-to-assume: ${{ secrets.ECR_IMAGE_PUSH_ROLE_ARN }}
-      #     aws-region: ap-northeast-1
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.ECR_IMAGE_PUSH_ROLE_ARN }}
+          aws-region: ap-northeast-1
 
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Build, tag, and push image to Amazon ECR
-      #   id: build_and_push_image
-      #   env:
-      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-      #     ECR_REPOSITORY: ${{ secrets.COMPANY_ECR_REPOSITORY_NAME }}
-      #     IMAGE_TAG: ${{ github.sha }}
-      #   run: |
-      #     IMAGE_URI_WITH_TAG="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      #     IMAGE_URI_LATEST="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
+      - name: Build, tag, and push image to Amazon ECR
+        id: build_and_push_image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.COMPANY_ECR_REPOSITORY_NAME }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI_WITH_TAG="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          IMAGE_URI_LATEST="$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
-      #     echo "Building image: $IMAGE_URI_WITH_TAG"
-      #     docker build -t $IMAGE_URI_WITH_TAG -f company/dockerfile company
+          echo "Building image: $IMAGE_URI_WITH_TAG"
+          docker build -t $IMAGE_URI_WITH_TAG -f company/dockerfile company
 
-      #     echo "Tagging image as latest: $IMAGE_URI_LATEST"
-      #     docker tag $IMAGE_URI_WITH_TAG $IMAGE_URI_LATEST
+          echo "Tagging image as latest: $IMAGE_URI_LATEST"
+          docker tag $IMAGE_URI_WITH_TAG $IMAGE_URI_LATEST
 
-      #     echo "Pushing image with commit tag: $IMAGE_URI_WITH_TAG"
-      #     docker push $IMAGE_URI_WITH_TAG
+          echo "Pushing image with commit tag: $IMAGE_URI_WITH_TAG"
+          docker push $IMAGE_URI_WITH_TAG
 
-      #     echo "Pushing image with latest tag: $IMAGE_URI_LATEST"
-      #     docker push $IMAGE_URI_LATEST
+          echo "Pushing image with latest tag: $IMAGE_URI_LATEST"
+          docker push $IMAGE_URI_LATEST
 
-      #     echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
+          echo "image_tag=$IMAGE_TAG" >> $GITHUB_OUTPUT
 
-      # - name: Notify deployment success
-      #   run: echo "Successfully pushed image ${{ github.sha }} (and latest) to ECR repository ${{ secrets.COMPANY_ECR_REPOSITORY_NAME }}"
+      - name: Notify deployment success
+        run: echo "Successfully pushed image ${{ github.sha }} (and latest) to ECR repository ${{ secrets.COMPANY_ECR_REPOSITORY_NAME }}"
 
   # ───────────────────────────────────────────────────────────────
   # 【事前準備】ECSサービス用Service-Linked-Roleの作成
