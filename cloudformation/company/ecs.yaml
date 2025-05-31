@@ -66,8 +66,8 @@ Resources:
               Value: AppLiftCompany
             - Name: APP_TIMEZONE
               Value: Asia/Tokyo
-            # - Name: APP_URL    # update later
-            #   Value: https://hoge.com/company
+            - Name: APP_URL
+              Value: https://app-lift.com/company
             - Name: APP_LOCALE
               Value: ja
             - Name: APP_FAKER_LOCALE
