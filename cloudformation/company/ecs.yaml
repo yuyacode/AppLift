@@ -86,6 +86,8 @@ Resources:
               Value: student
             - Name: DB3_DATABASE
               Value: common
+            - Name: DB4_DATABASE
+              Value: message_scheduler
             - Name: SESSION_PATH
               Value: /company
             - Name: SESSION_COOKIE
@@ -142,6 +144,20 @@ Resources:
                       - "${DBStackName}-MasterSecretARN"
                       - { DBStackName: !Ref DBStackName }
             - Name: DB3_PASSWORD
+              ValueFrom: !Sub
+                - "${ImportedArn}:password::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB4_USERNAME
+              ValueFrom: !Sub
+                - "${ImportedArn}:username::"
+                - ImportedArn: !ImportValue
+                    Fn::Sub:
+                      - "${DBStackName}-MasterSecretARN"
+                      - { DBStackName: !Ref DBStackName }
+            - Name: DB4_PASSWORD
               ValueFrom: !Sub
                 - "${ImportedArn}:password::"
                 - ImportedArn: !ImportValue

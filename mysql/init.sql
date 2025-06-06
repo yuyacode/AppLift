@@ -1,6 +1,7 @@
 CREATE DATABASE IF NOT EXISTS company;
 CREATE DATABASE IF NOT EXISTS student;
 CREATE DATABASE IF NOT EXISTS common;
+CREATE DATABASE IF NOT EXISTS message_scheduler;
 
 CREATE USER IF NOT EXISTS 'user1'@'%' IDENTIFIED BY 'password1';
 CREATE USER IF NOT EXISTS 'user2'@'%' IDENTIFIED BY 'password2';
@@ -13,5 +14,6 @@ GRANT ALL PRIVILEGES ON common.* TO 'user2'@'%';
 GRANT ALL PRIVILEGES ON common.* TO 'user3'@'%';
 GRANT ALL PRIVILEGES ON company.* TO 'user3'@'%';
 GRANT ALL PRIVILEGES ON student.* TO 'user3'@'%';
+GRANT ALL PRIVILEGES ON message_scheduler.* TO 'user3'@'%';
 
 FLUSH PRIVILEGES;
