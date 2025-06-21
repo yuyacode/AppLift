@@ -193,7 +193,7 @@ jobs:
         run: echo "Successfully pushed image ${{ github.sha }} (and latest) to ECR repository ${{ secrets.STUDENT_ECR_REPOSITORY_NAME }}"
 
   deploy-ecs:
-    needs: [build_and_push_image, deploy-secrets-manager]
+    needs: [build_and_push_image, deploy-secrets-manager, deploy-role]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
