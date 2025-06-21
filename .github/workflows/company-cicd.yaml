@@ -9,40 +9,40 @@ permissions:
   contents: read
 
 jobs:
-  # php-unit:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Check out repository
-  #       uses: actions/checkout@v4
+  php-unit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
 
-  #     - name: Set up PHP
-  #       uses: shivammathur/setup-php@v2
-  #       with:
-  #         php-version: '8.3'
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
 
-  #     - name: Cache dependencies
-  #       uses: actions/cache@v3
-  #       with:
-  #         path: company/vendor
-  #         key: ${{ runner.os }}-composer-${{ hashFiles('company/composer.lock') }}
-  #         restore-keys: ${{ runner.os }}-composer-
+      - name: Cache dependencies
+        uses: actions/cache@v3
+        with:
+          path: company/vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('company/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
 
-  #     - name: Install dependencies
-  #       run: |
-  #         cd company
-  #         composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Install dependencies
+        run: |
+          cd company
+          composer install --no-progress --prefer-dist --optimize-autoloader
 
-  #     - name: Setup .env.testing and DB
-  #       run: |
-  #         cd company
-  #         cp .env.testing.example .env.testing
-  #         php artisan key:generate --env=testing
-  #         touch database/{company.sqlite,student.sqlite,common.sqlite}
+      - name: Setup .env.testing and DB
+        run: |
+          cd company
+          cp .env.testing.example .env.testing
+          php artisan key:generate --env=testing
+          touch database/{company.sqlite,student.sqlite,common.sqlite}
 
-  #     - name: Run tests
-  #       run: |
-  #         cd company
-  #         php artisan test
+      - name: Run tests
+        run: |
+          cd company
+          php artisan test
 
   cfn-lint:
     runs-on: ubuntu-latest
@@ -90,8 +90,7 @@ jobs:
           done
 
   deploy-log_group:
-    # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]
+    needs: [php-unit, cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -110,8 +109,7 @@ jobs:
             --stack-name Company-Log-Group
 
   deploy-secrets-manager:
-    # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]
+    needs: [php-unit, cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -129,9 +127,28 @@ jobs:
             --template-file cloudformation/company/secrets-manager.yaml \
             --stack-name Company-Secrets-Manager
 
+  deploy-role:
+    needs: [php-unit, cfn-lint, cfn-nag]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.IAM_ROLE_STACK_DEPLOYMENT_ROLE_ARN }}
+          aws-region: ap-northeast-1
+
+      - name: Deploy Role
+        run: |
+          aws cloudformation deploy \
+            --template-file cloudformation/company/role.yaml \
+            --stack-name Company-Role \
+            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM
+
   deploy-ecr:
-    # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]
+    needs: [php-unit, cfn-lint, cfn-nag]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -195,18 +212,8 @@ jobs:
       - name: Notify deployment success
         run: echo "Successfully pushed image ${{ github.sha }} (and latest) to ECR repository ${{ secrets.COMPANY_ECR_REPOSITORY_NAME }}"
 
-  # ───────────────────────────────────────────────────────────────
-  # 【事前準備】ECSサービス用Service-Linked-Roleの作成
-  # 
-  # デプロイ先環境にまだService-Linked-Role「AWSServiceRoleForECS」が存在しない場合、以下のコマンドを実行して、手動で作成してください。
-  # 
-  #   aws iam create-service-linked-role --aws-service-name ecs.amazonaws.com
-  # 
-  # ※cloudformationテンプレートの可搬性を高めるため、Service-Linked-Roleは手動で作成する運用としています。
-  # ※このロールはECSが内部的にENIの作成やALB登録を行う際に必須となります。
-  # ───────────────────────────────────────────────────────────────
   deploy-ecs:
-    needs: [build_and_push_image, deploy-secrets-manager]
+    needs: [build_and_push_image, deploy-secrets-manager, deploy-role]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -237,24 +244,3 @@ jobs:
               SGStackName=Security-Group \
               MaxTaskCount=2 \
               MinTaskCount=1
-
-  deploy-role:
-    # needs: [php-unit, cfn-lint, cfn-nag]
-    needs: [cfn-lint, cfn-nag]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.IAM_ROLE_STACK_DEPLOYMENT_ROLE_ARN }}
-          aws-region: ap-northeast-1
-
-      - name: Deploy Role
-        run: |
-          aws cloudformation deploy \
-            --template-file cloudformation/company/role.yaml \
-            --stack-name Company-Role \
-            --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM

@@ -41,4 +41,12 @@ class PasswordResetLinkController extends Controller
                     : back()->withInput($request->only('email'))
                         ->withErrors(['email' => __($status)]);
     }
+
+    /**
+     * Display a view indicating that sending e-mail is not available
+     */
+    public function show_email_unavailable(): View
+    {
+        return view('email-unavailable');
+    }
 }
