@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\View\View;
 
 class EmailVerificationNotificationController extends Controller
 {
@@ -20,5 +21,13 @@ class EmailVerificationNotificationController extends Controller
         $request->user()->sendEmailVerificationNotification();
 
         return back()->with('status', 'verification-link-sent');
+    }
+
+    /**
+     * Display a view indicating that sending e-mail is not available
+     */
+    public function show_email_unavailable(): View
+    {
+        return view('email-unavailable');
     }
 }
