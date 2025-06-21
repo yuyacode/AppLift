@@ -234,7 +234,9 @@ jobs:
               RoleStackName=Company-Role \
               ECSClusterStackName=ECS-Cluster \
               ALBStackName=ALB \
-              SGStackName=Security-Group
+              SGStackName=Security-Group \
+              MaxTaskCount=2 \
+              MinTaskCount=1
 
   deploy-role:
     # needs: [php-unit, cfn-lint, cfn-nag]
