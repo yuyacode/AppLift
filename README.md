@@ -54,8 +54,8 @@
 企業の透明性を高め、候補者の不安を解消することで、採用における「認知」と「応募」の間に存在する高いハードルを取り払い、双方にとっての機会損失を防ぐことを目指します。
 
 -   **URL**
-    -   企業側：[https://app-lift.com/company/login](https://app-lift.com/company/login)
-    -   候補者側：[https://app-lift.com/student/login](https://app-lift.com/student/login)
+    -   企業側： ~~https://app-lift.com/company/login~~ （公開終了）
+    -   候補者側： ~~https://app-lift.com/student/login~~ （公開終了）
 -   **Test Account**
     -   企業側：`ID: demo_company1@example.com / PW: demo_company1`
     -   候補者側：`ID: demo_student1@example.com / PW: demo_student1`
